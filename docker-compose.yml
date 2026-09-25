@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  kisan-dr-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kisan-dr-ai:latest
+    container_name: kisan-dr-ai-service
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

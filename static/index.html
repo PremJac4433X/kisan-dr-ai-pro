@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KisanDr AI – Intelligent Crop Health & Advisory</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2316a34a'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif'],
+          },
+          colors: {
+            kisan: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .pulse-glow {
+      animation: pulse-subtle 2.5s infinite ease-in-out;
+    }
+    .audio-wave-bar {
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      margin: 0 2px;
+      background-color: currentColor;
+      border-radius: 9999px;
+      animation: wave 1s infinite ease-in-out;
+    }
+    .audio-wave-bar:nth-child(2) { animation-delay: 0.2s; height: 24px; }
+    .audio-wave-bar:nth-child(3) { animation-delay: 0.4s; height: 18px; }
+    .audio-wave-bar:nth-child(4) { animation-delay: 0.1s; height: 22px; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printable-report, #printable-report * { visibility: visible; }
+      #printable-report { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased selection:bg-kisan-500 selection:text-white">
+
+  <!-- Top Banner / Agri Helpline Bar -->
+  <div class="bg-gradient-to-r from-emerald-800 to-kisan-900 text-emerald-100 text-xs py-2 px-4 border-b border-emerald-700/50">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center p-1 bg-emerald-700/60 rounded-full">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5 text-emerald-300"></i>
+        </span>
+        <span>National Kisan Call Centre (Toll-Free): <strong class="text-white font-semibold">1800-180-1551</strong></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5">
+          <i data-lucide="cloud-sun" class="w-4 h-4 text-amber-300"></i>
+          <span>Field Temp: <strong>26°C</strong> | Humidity: <strong>84%</strong></span>
+        </span>
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          ⚠️ Fungal Alert: Moderate
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-white/95">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-kisan-500 to-kisan-700 flex items-center justify-center shadow-lg shadow-kisan-600/20 text-white">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+              <span>KisanDr</span><span class="text-kisan-600 font-bold">AI</span>
+            </h1>
+            <span class="text-xs bg-kisan-100 text-kisan-800 font-semibold px-2 py-0.5 rounded-full border border-kisan-300">
+              कृषि-मित्र v1.0
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 hidden sm:block">AI Crop Disease Diagnostics & Local Language Farmer Advisory</p>
+        </div>
+      </div>
+
+      <!-- Language Selector & Controls -->
+      <div class="flex items-center gap-3">
+        <div class="relative flex items-center">
+          <i data-lucide="languages" class="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none"></i>
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="pl-9 pr-8 py-2 bg-slate-100 hover:bg-slate-200/80 transition-colors border border-slate-300 text-slate-800 text-sm font-semibold rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none cursor-pointer">
+            <option value="hi" selected>🇮🇳 हिन्दी (Hindi)</option>
+            <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+            <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+            <option value="mr">🇮🇳 मराठी (Marathi)</option>
+            <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+            <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="en">🌐 English</option>
+          </select>
+        </div>
+
+        <button onclick="openEncyclopediaModal()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 hover:text-kisan-700 bg-white border border-slate-200 hover:border-kisan-300 rounded-lg shadow-sm transition-all">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Crop Guide</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Primary Interface -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+    
+    <!-- Hero Header -->
+    <div class="text-center max-w-3xl mx-auto space-y-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-kisan-50 border border-kisan-200 rounded-full text-xs font-semibold text-kisan-700">
+        <i data-lucide="shield-check" class="w-4 h-4 text-kisan-600"></i>
+        <span id="earlyStageBadge">Early Detection Saves Up to 90% Crop Yield</span>
+      </div>
+      <h2 id="heroTitle" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Instant AI Crop Disease Detection & Local Treatment
+      </h2>
+      <p id="heroSubtitle" class="text-sm sm:text-base text-slate-600">
+        Upload or take a photo of an infected leaf. Get immediate diagnosis, exact chemical dosage, organic remedies, and listen in your mother tongue.
+      </p>
+    </div>
+
+    <!-- Diagnostic Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- Left Column: Image Upload & Sample Selection (lg: 5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+          
+          <div class="flex items-center justify-between">
+            <h3 id="uploadHeading" class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="camera" class="w-5 h-5 text-kisan-600"></i>
+              <span>Upload or Capture Leaf Photo</span>
+            </h3>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">JPEG / PNG</span>
+          </div>
+
+          <!-- Crop Selection Dropdown -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+              Select Crop (Optional)
+            </label>
+            <div class="relative">
+              <select id="cropSelect" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-kisan-500 focus:outline-none">
+                <option value="auto">🌿 Auto-Detect Crop Automatically</option>
+                <optgroup label="🥦 Vegetables (सब्जियां)">
+                  <option value="tomato">🍅 Tomato (टमाटर / టమోటా)</option>
+                  <option value="potato">🥔 Potato (आलू / బంగాళాదుంప)</option>
+                  <option value="eggplant">🍆 Brinjal / Eggplant (बैंगन / వంకాయ)</option>
+                  <option value="onion">🧅 Onion & Garlic (प्याज / ఉల్లిపాయ)</option>
+                  <option value="okra">🌱 Okra / Bhindi (भिंडी / బెండకాయ)</option>
+                  <option value="cabbage">🥬 Cabbage & Cauliflower (गोभी / క్యాబేజీ)</option>
+                  <option value="cucumber">🥒 Cucumber & Gourds (खीरा / దోసకాయ)</option>
+                  <option value="ginger">🫚 Ginger & Turmeric (अदरक / అల్లం)</option>
+                  <option value="pepper">🫑 Bell Pepper / Chilli (मिर्च / మిరప)</option>
+                </optgroup>
+                <optgroup label="🍎 Fruits & Orchards (फल व बागवानी)">
+                  <option value="mango">🥭 Mango (आम / మామిడి)</option>
+                  <option value="banana">🍌 Banana (केला / అరటి)</option>
+                  <option value="citrus">🍋 Citrus (Lemon / Orange / నిమ్మ)</option>
+                  <option value="papaya">🍈 Papaya (पपीता / బొప్పాయి)</option>
+                  <option value="pomegranate">🫐 Pomegranate (अनार / దానిమ్మ)</option>
+                  <option value="guava">🍏 Guava (अमरूद / జామ)</option>
+                  <option value="strawberry">🍓 Strawberry (स्ट्रॉबेरी / స్ట్రాబెర్రీ)</option>
+                  <option value="apple">🍎 Apple (सेब / ఆపిల్)</option>
+                  <option value="grape">🍇 Grape (अंगूर / ద్రాక్ష)</option>
+                </optgroup>
+                <optgroup label="🌾 Cereals & Grains (अनाज व खाद्यान्न)">
+                  <option value="rice">🌾 Rice / Paddy (धान / వరి)</option>
+                  <option value="corn">🌽 Corn / Maize (मक्का / మొక్కజొన్న)</option>
+                  <option value="wheat">🌾 Wheat (गेहूं / గోధుమ)</option>
+                  <option value="millet">🌾 Pearl Millet / Bajra (बाजरा / సజ్జలు)</option>
+                </optgroup>
+                <optgroup label="🌱 Cash Crops & Pulses (दलहन, तिलहन व नकदी)">
+                  <option value="sugarcane">🎋 Sugarcane (गन्ना / చెరకు)</option>
+                  <option value="cotton">🌱 Cotton (कपास / పత్తి)</option>
+                  <option value="soybean">🫘 Soybean (सोयाबीन / సోయాబీన్)</option>
+                  <option value="groundnut">🥜 Groundnut / Peanut (मूंगफली / వేరుశెనగ)</option>
+                  <option value="chickpea">🫘 Chickpea / Gram (चना / శనగలు)</option>
+                  <option value="tea">🍵 Tea (चाय / తేయాకు)</option>
+                  <option value="coffee">☕ Coffee (कॉफी / కాఫీ)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Upload Zone -->
+          <div id="dropZone" onclick="document.getElementById('fileInput').click()" class="border-2 border-dashed border-slate-300 hover:border-kisan-500 bg-slate-50/75 hover:bg-kisan-50/30 rounded-xl p-6 text-center cursor-pointer transition-all duration-200 relative group">
+            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+            
+            <div id="uploadPrompt" class="space-y-3">
+              <div class="w-14 h-14 mx-auto rounded-full bg-kisan-100 flex items-center justify-center text-kisan-600 group-hover:scale-110 transition-transform">
+                <i data-lucide="image-plus" class="w-7 h-7"></i>
+              </div>
+              <div>
+                <p id="dragDropText" class="text-sm font-semibold text-slate-800">
+                  Tap to take camera photo or browse files
+                </p>
+                <p class="text-xs text-slate-500 mt-1">High-resolution leaf close-up recommended</p>
+              </div>
+            </div>
+
+            <!-- Preview image element -->
+            <div id="previewContainer" class="hidden space-y-2">
+              <img id="imagePreview" src="" alt="Selected leaf" class="w-full h-48 object-cover rounded-lg shadow-sm border border-slate-200">
+              <button type="button" onclick="event.stopPropagation(); resetImage();" class="text-xs text-red-600 hover:text-red-700 font-semibold inline-flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Change Image
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Diagnose Button -->
+          <button id="diagnoseBtn" onclick="runDiagnosis()" class="w-full py-3.5 px-4 bg-gradient-to-r from-kisan-600 to-kisan-700 hover:from-kisan-700 hover:to-kisan-800 text-white font-bold text-base rounded-xl shadow-lg shadow-kisan-600/30 flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <span id="diagnoseBtnText">Diagnose Crop Disease</span>
+          </button>
+
+          <!-- Pre-loaded Sample Gallery for Instant 1-Click Testing -->
+          <div class="pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-3">
+              <p id="sampleGalleryLabel" class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Or Try Sample Leaves (1-Click Test):
+              </p>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="loadSample('tomato_early_blight', 'tomato')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/tomato_early_blight.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Tomato Early Blight</span>
+                <span class="block text-[10px] text-amber-600 font-medium">Early Stage</span>
+              </button>
+              <button onclick="loadSample('potato_late_blight', 'potato')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/potato_late_blight.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Potato Late Blight</span>
+                <span class="block text-[10px] text-red-600 font-medium">Critical</span>
+              </button>
+              <button onclick="loadSample('rice_blast', 'rice')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/rice_blast.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Rice Blast</span>
+                <span class="block text-[10px] text-amber-600 font-medium">Moderate</span>
+              </button>
+              <button onclick="loadSample('corn_rust', 'corn')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/corn_rust.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Corn Rust</span>
+                <span class="block text-[10px] text-amber-600 font-medium">Early/Mod</span>
+              </button>
+              <button onclick="loadSample('cotton_blight', 'cotton')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/cotton_blight.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Cotton Blight</span>
+                <span class="block text-[10px] text-amber-600 font-medium">Bacterial</span>
+              </button>
+              <button onclick="loadSample('tomato_healthy', 'tomato')" class="p-2 border border-slate-200 rounded-lg hover:border-kisan-500 hover:bg-kisan-50/50 text-left transition group">
+                <img src="/static/samples/tomato_healthy.jpg" class="w-full h-14 object-cover rounded mb-1.5">
+                <span class="block text-[11px] font-bold text-slate-800 truncate">Healthy Tomato</span>
+                <span class="block text-[10px] text-emerald-600 font-medium">Healthy</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Weather Risk Mini Card -->
+        <div class="bg-gradient-to-br from-amber-500/10 via-white to-emerald-50 rounded-2xl p-5 border border-amber-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="cloud-rain" class="w-4 h-4 text-blue-600"></i>
+              <span id="weatherRiskTitle">Weather & Disease Risk Forecast</span>
+            </span>
+            <span id="riskBadge" class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">
+              Moderate Risk
+            </span>
+          </div>
+          <p id="weatherRiskAdvice" class="text-xs text-slate-700">
+            High ambient humidity (84%) combined with 26°C temperature facilitates rapid fungal sporulation. Inspect lower canopy carefully.
+          </p>
+          <div class="text-[11px] bg-white/80 p-2.5 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-600">
+            <i data-lucide="clock" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+            <span id="sprayWindowAdvice">Optimal Spray Window: 4:00 PM – 6:30 PM (Cool canopy, calm wind)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: AI Diagnosis Results & Multilingual Advisory (lg: 7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Loading State Placeholder -->
+        <div id="loadingState" class="hidden bg-white rounded-2xl p-12 border border-slate-200 shadow-sm text-center space-y-4">
+          <div class="w-16 h-16 mx-auto border-4 border-kisan-200 border-t-kisan-600 rounded-full animate-spin"></div>
+          <div>
+            <h4 class="text-lg font-bold text-slate-800" id="analyzingText">Analyzing leaf pathology with AI...</h4>
+            <p class="text-xs text-slate-500 mt-1">Segmenting necrotic lesions and querying regional advisory database</p>
+          </div>
+        </div>
+
+        <!-- Empty Welcome Placeholder before analysis -->
+        <div id="emptyState" class="bg-white rounded-2xl p-10 border border-slate-200 shadow-sm text-center space-y-4">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 text-kisan-600 flex items-center justify-center">
+            <i data-lucide="scan-line" class="w-8 h-8"></i>
+          </div>
+          <div class="max-w-md mx-auto">
+            <h3 class="text-lg font-bold text-slate-800">Ready for Crop Diagnosis</h3>
+            <p class="text-sm text-slate-600 mt-1">
+              Select or take a photo of any crop leaf on the left, or choose a sample to see instant multi-language diagnostics, remedies, and listen to voice advice.
+            </p>
+          </div>
+          <div class="pt-2">
+            <button onclick="loadSample('tomato_early_blight', 'tomato')" class="inline-flex items-center gap-2 px-4 py-2 bg-kisan-50 text-kisan-700 hover:bg-kisan-100 rounded-xl text-xs font-bold transition">
+              <i data-lucide="play-circle" class="w-4 h-4"></i> Run Demo with Tomato Early Blight
+            </button>
+          </div>
+        </div>
+
+        <!-- Diagnosis Result Card (Shown when data is ready) -->
+        <div id="resultsCard" class="hidden space-y-6">
+
+          <!-- Primary Diagnosis Header Card -->
+          <div id="printable-report" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+            
+            <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-100">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span id="cropBadge" class="text-xs font-bold text-kisan-800 bg-kisan-100 px-2.5 py-0.5 rounded-full border border-kisan-200">
+                    Tomato
+                  </span>
+                  <span id="severityBadge" class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">
+                    Early Stage (High Curability)
+                  </span>
+                </div>
+                <h3 id="diseaseNameLocalized" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                  Early Blight (अगेती झुलसा)
+                </h3>
+                <p id="pathogenInfo" class="text-xs text-slate-500 font-mono mt-0.5">
+                  Pathogen: Alternaria solani (Fungus)
+                </p>
+              </div>
+
+              <!-- Confidence Gauge -->
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">AI Confidence</div>
+                <div id="confidenceVal" class="text-2xl font-extrabold text-kisan-600">94.2%</div>
+                <div class="text-[11px] text-slate-400">Affected Area: <strong id="affectedAreaVal" class="text-slate-700">8.4%</strong></div>
+              </div>
+            </div>
+
+            <!-- Voice Player Bar (Game Changer for Farmers) -->
+            <div class="bg-gradient-to-r from-emerald-600 to-kisan-800 rounded-xl p-4 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <button id="voicePlayBtn" onclick="toggleSpeech()" class="w-12 h-12 rounded-full bg-white text-kisan-700 hover:bg-emerald-50 flex items-center justify-center shadow-lg transition-transform transform active:scale-95 flex-shrink-0">
+                  <i id="voicePlayIcon" data-lucide="volume-2" class="w-6 h-6"></i>
+                </button>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold" id="listenAudioLabel">Listen in Your Language (बोलकर सुनें)</span>
+                    <div id="audioWave" class="hidden text-emerald-200">
+                      <span class="audio-wave-bar"></span>
+                      <span class="audio-wave-bar"></span>
+                      <span class="audio-wave-bar"></span>
+                      <span class="audio-wave-bar"></span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-emerald-100 line-clamp-1" id="voiceSnippet">
+                    Clear audio instructions in your chosen local language.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="shareWhatsApp()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-500/30 hover:bg-emerald-500/50 text-white rounded-lg text-xs font-semibold border border-white/20 transition">
+                  <i data-lucide="share-2" class="w-4 h-4"></i>
+                  <span id="shareWhatsappLabel">Share WhatsApp</span>
+                </button>
+                <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/20 transition no-print">
+                  <i data-lucide="printer" class="w-4 h-4"></i>
+                  <span>Print</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Disease Summary text -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+              <p id="summaryLocalizedText" class="text-sm text-slate-800 leading-relaxed font-medium">
+                Concentric dark rings with yellow halos on lower leaves. Immediate action prevents yield decline.
+              </p>
+            </div>
+
+            <!-- Tabbed Actionable Advisory -->
+            <div class="space-y-4">
+              <!-- Tab Headers -->
+              <div class="flex border-b border-slate-200 gap-2 sm:gap-4 overflow-x-auto pb-1 text-sm font-bold">
+                <button id="tabBtnOrganic" onclick="switchTab('organic')" class="py-2 px-3 border-b-2 border-kisan-600 text-kisan-700 flex items-center gap-1.5 whitespace-nowrap">
+                  <i data-lucide="leaf" class="w-4 h-4"></i>
+                  <span id="organicTabLabel">Biological / Organic</span>
+                </button>
+                <button id="tabBtnChemical" onclick="switchTab('chemical')" class="py-2 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap">
+                  <i data-lucide="flask-conical" class="w-4 h-4"></i>
+                  <span id="chemicalTabLabel">Chemical Dosage</span>
+                </button>
+                <button id="tabBtnPrevention" onclick="switchTab('prevention')" class="py-2 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap">
+                  <i data-lucide="shield" class="w-4 h-4"></i>
+                  <span id="preventionTabLabel">Prevention & Care</span>
+                </button>
+              </div>
+
+              <!-- Tab Contents -->
+              <!-- Tab 1: Organic -->
+              <div id="tabContentOrganic" class="space-y-3">
+                <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-200 space-y-2">
+                  <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                    Eco-Friendly & Natural Treatments:
+                  </h4>
+                  <ul id="organicList" class="space-y-2 text-sm text-emerald-950">
+                    <!-- Populated dynamically -->
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Tab 2: Chemical -->
+              <div id="tabContentChemical" class="hidden space-y-3">
+                <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-200 space-y-2">
+                  <h4 class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-blue-600"></i>
+                    Recommended Chemical Formulations & Precise Dosage:
+                  </h4>
+                  <ul id="chemicalList" class="space-y-2 text-sm text-blue-950 font-medium">
+                    <!-- Populated dynamically -->
+                  </ul>
+                  <div class="mt-3 p-2.5 bg-amber-50 rounded-lg border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                    <span>Always wear a mask and gloves when spraying. Maintain recommended waiting period (7-10 days) before harvest.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Prevention -->
+              <div id="tabContentPrevention" class="hidden space-y-3">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="calendar" class="w-4 h-4 text-kisan-600"></i>
+                    Field Practices to Prevent Reoccurrence:
+                  </h4>
+                  <ul id="preventionList" class="space-y-2 text-sm text-slate-700">
+                    <!-- Populated dynamically -->
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Alternative Candidates / Diagnostic Breakdown -->
+            <div class="pt-4 border-t border-slate-100">
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                Spectral Diagnostic Confidence Breakdown:
+              </p>
+              <div id="candidatesList" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Crop Encyclopedia Modal (Guide) -->
+  <div id="encyclopediaModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-kisan-600"></i>
+          <span>Crop Disease Encyclopedia & Advisory</span>
+        </h3>
+        <button onclick="closeEncyclopediaModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-6">
+        <p class="text-sm text-slate-600">
+          KisanDr AI features comprehensive clinical pathology, organic remedies, and precise chemical dosages for <strong>30+ agricultural crops</strong> across 4 key farm sectors:
+        </p>
+        
+        <!-- Vegetables Section -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 text-emerald-700">
+            <span>🥦 Vegetables (सब्जियां)</span>
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍅 Tomato (टमाटर)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🥔 Potato (आलू)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍆 Brinjal (बैंगन)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🧅 Onion (प्याज)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌱 Okra / Bhindi (भिंडी)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🥬 Cabbage (गोभी)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🥒 Cucumber (खीरा)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🫚 Ginger (अदरक)</div>
+          </div>
+        </div>
+
+        <!-- Fruits Section -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 text-rose-700">
+            <span>🍎 Fruits & Orchards (फल व बागवानी)</span>
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🥭 Mango (आम)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍌 Banana (केला)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍋 Citrus (नींबू)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍈 Papaya (पपीता)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🫐 Pomegranate (अनार)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍏 Guava (अमरूद)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍓 Strawberry (स्ट्रॉबेरी)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍎 Apple (सेब)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍇 Grape (अंगूर)</div>
+          </div>
+        </div>
+
+        <!-- Cereals Section -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 text-amber-700">
+            <span>🌾 Cereals & Grains (अनाज व खाद्यान्न)</span>
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌾 Rice / Paddy (धान)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌽 Corn / Maize (मक्का)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌾 Wheat (गेहूं)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌾 Bajra (बाजरा)</div>
+          </div>
+        </div>
+
+        <!-- Cash Crops & Pulses -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 text-blue-700">
+            <span>🌱 Cash Crops & Pulses (दलहन, तिलहन व नकदी)</span>
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🎋 Sugarcane (गन्ना)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🌱 Cotton (कपास)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🫘 Soybean (सोयाबीन)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🥜 Groundnut (मूंगफली)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🫘 Chickpea (चना)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">🍵 Tea (चाय)</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 font-semibold">☕ Coffee (कॉफी)</div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <button onclick="closeEncyclopediaModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-900 transition">
+          Close Guide
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p class="font-medium text-slate-700">
+        KisanDr AI – Advanced Agricultural Diagnostics Platform for Smallholder Farmers
+      </p>
+      <p>
+        Designed to empower farmers with early crop disease intervention, bio-fertilizer guidance, and multilingual voice advisory.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    let currentLanguage = 'hi';
+    let currentSelectedFile = null;
+    let currentSelectedSample = null;
+    let latestDiagnosisData = null;
+    let speechUtterance = null;
+    let isSpeaking = false;
+
+    // Initialize Lucide icons
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      updateUILabels();
+    });
+
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      updateUILabels();
+      // If we already have a diagnosis result, re-run diagnosis with the new language for instant translation
+      if (latestDiagnosisData) {
+        runDiagnosis();
+      }
+    }
+
+    async function updateUILabels() {
+      try {
+        const res = await fetch(`/api/ui-labels?lang=${currentLanguage}`);
+        const data = await res.json();
+        const labels = data.labels;
+        
+        if (labels.drag_drop_text) document.getElementById('dragDropText').textContent = labels.drag_drop_text;
+        if (labels.diagnose_btn) document.getElementById('diagnoseBtnText').textContent = labels.diagnose_btn;
+        if (labels.analyzing) document.getElementById('analyzingText').textContent = labels.analyzing;
+        if (labels.organic_tab) document.getElementById('organicTabLabel').textContent = labels.organic_tab;
+        if (labels.chemical_tab) document.getElementById('chemicalTabLabel').textContent = labels.chemical_tab;
+        if (labels.prevention_tab) document.getElementById('preventionTabLabel').textContent = labels.prevention_tab;
+        if (labels.listen_audio) document.getElementById('listenAudioLabel').textContent = labels.listen_audio;
+        if (labels.share_whatsapp) document.getElementById('shareWhatsappLabel').textContent = labels.share_whatsapp;
+        if (labels.weather_risk_title) document.getElementById('weatherRiskTitle').textContent = labels.weather_risk_title;
+        if (labels.sample_gallery) document.getElementById('sampleGalleryLabel').textContent = labels.sample_gallery;
+        if (labels.upload_heading) document.getElementById('uploadHeading').querySelector('span').textContent = labels.upload_heading;
+      } catch (e) {
+        console.warn("UI label load error", e);
+      }
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentSelectedFile = file;
+      currentSelectedSample = null;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        document.getElementById('imagePreview').src = event.target.result;
+        document.getElementById('uploadPrompt').classList.add('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadSample(sampleName, cropKey) {
+      currentSelectedSample = sampleName;
+      currentSelectedFile = null;
+      document.getElementById('cropSelect').value = cropKey || 'auto';
+
+      document.getElementById('imagePreview').src = `/static/samples/${sampleName}.jpg`;
+      document.getElementById('uploadPrompt').classList.add('hidden');
+      document.getElementById('previewContainer').classList.remove('hidden');
+
+      // Automatically run diagnosis when sample is clicked for immediate response!
+      runDiagnosis();
+    }
+
+    function resetImage() {
+      currentSelectedFile = null;
+      currentSelectedSample = null;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('uploadPrompt').classList.remove('hidden');
+      document.getElementById('previewContainer').classList.add('hidden');
+    }
+
+    async function runDiagnosis() {
+      if (!currentSelectedFile && !currentSelectedSample) {
+        // Default to tomato early blight sample for user convenience
+        loadSample('tomato_early_blight', 'tomato');
+        return;
+      }
+
+      // UI state
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('resultsCard').classList.add('hidden');
+      document.getElementById('loadingState').classList.remove('hidden');
+      document.getElementById('diagnoseBtn').disabled = true;
+
+      stopSpeech();
+
+      const formData = new FormData();
+      if (currentSelectedFile) {
+        formData.append('file', currentSelectedFile);
+      } else if (currentSelectedSample) {
+        formData.append('sample_name', currentSelectedSample);
+      }
+
+      formData.append('target_crop', document.getElementById('cropSelect').value);
+      formData.append('lang', currentLanguage);
+
+      try {
+        const response = await fetch('/api/diagnose', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) throw new Error('Diagnosis failed');
+
+        const result = await response.json();
+        latestDiagnosisData = result;
+        renderResults(result);
+
+      } catch (err) {
+        console.error(err);
+        alert('Diagnostic service error. Please try again.');
+        document.getElementById('emptyState').classList.remove('hidden');
+      } finally {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('diagnoseBtn').disabled = false;
+      }
+    }
+
+    function renderResults(data) {
+      const diag = data.diagnosis;
+      const adv = data.advisory;
+      const risk = data.weather_risk;
+
+      // Badges & Titles
+      document.getElementById('cropBadge').textContent = diag.crop;
+      document.getElementById('severityBadge').textContent = diag.severity_stage;
+      document.getElementById('diseaseNameLocalized').textContent = diag.disease_name_localized;
+      document.getElementById('pathogenInfo').textContent = `Pathogen: ${diag.pathogen} (${diag.pathogen_type})`;
+      document.getElementById('confidenceVal').textContent = `${diag.confidence}%`;
+      document.getElementById('affectedAreaVal').textContent = `${diag.affected_area_pct}%`;
+      document.getElementById('summaryLocalizedText').textContent = diag.summary_localized;
+
+      // Color coding severity badge
+      const sBadge = document.getElementById('severityBadge');
+      if (diag.stage_code === 'healthy') {
+        sBadge.className = 'text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200';
+      } else if (diag.stage_code === 'early') {
+        sBadge.className = 'text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300';
+      } else {
+        sBadge.className = 'text-xs font-bold text-red-800 bg-red-100 px-2.5 py-0.5 rounded-full border border-red-300';
+      }
+
+      // Voice snippet text
+      document.getElementById('voiceSnippet').textContent = diag.voice_summary;
+
+      // Populate Organic Remedies
+      const orgUl = document.getElementById('organicList');
+      orgUl.innerHTML = '';
+      (adv.organic_remedies || []).forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        li.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"></i> <span>${item}</span>`;
+        orgUl.appendChild(li);
+      });
+
+      // Populate Chemical Treatments
+      const chemUl = document.getElementById('chemicalList');
+      chemUl.innerHTML = '';
+      (adv.chemical_treatments || []).forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        li.innerHTML = `<i data-lucide="beaker" class="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5"></i> <span>${item}</span>`;
+        chemUl.appendChild(li);
+      });
+
+      // Populate Prevention
+      const prevUl = document.getElementById('preventionList');
+      prevUl.innerHTML = '';
+      (adv.preventive_practices || []).forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2';
+        li.innerHTML = `<i data-lucide="shield-check" class="w-4 h-4 text-kisan-600 flex-shrink-0 mt-0.5"></i> <span>${item}</span>`;
+        prevUl.appendChild(li);
+      });
+
+      // Top candidate breakdown
+      const candDiv = document.getElementById('candidatesList');
+      candDiv.innerHTML = '';
+      (diag.top_candidates || []).forEach(cand => {
+        const box = document.createElement('div');
+        box.className = 'p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs';
+        box.innerHTML = `
+          <div class="font-bold text-slate-800 truncate">${cand.disease_name}</div>
+          <div class="text-[11px] text-slate-500">${cand.crop} &bull; ${(cand.probability * 100).toFixed(1)}% match</div>
+        `;
+        candDiv.appendChild(box);
+      });
+
+      // Weather Risk Card Update
+      document.getElementById('weatherRiskAdvice').textContent = risk.general_advice;
+      document.getElementById('sprayWindowAdvice').textContent = risk.spray_window;
+      document.getElementById('riskBadge').textContent = risk.risk_level;
+
+      document.getElementById('resultsCard').classList.remove('hidden');
+      lucide.createIcons();
+
+      // Scroll smoothly to results on mobile
+      document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tabContentOrganic').classList.add('hidden');
+      document.getElementById('tabContentChemical').classList.add('hidden');
+      document.getElementById('tabContentPrevention').classList.add('hidden');
+
+      const btnOrg = document.getElementById('tabBtnOrganic');
+      const btnChem = document.getElementById('tabBtnChemical');
+      const btnPrev = document.getElementById('tabBtnPrevention');
+
+      [btnOrg, btnChem, btnPrev].forEach(b => {
+        b.className = 'py-2 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 whitespace-nowrap';
+      });
+
+      if (tab === 'organic') {
+        document.getElementById('tabContentOrganic').classList.remove('hidden');
+        btnOrg.className = 'py-2 px-3 border-b-2 border-kisan-600 text-kisan-700 flex items-center gap-1.5 whitespace-nowrap';
+      } else if (tab === 'chemical') {
+        document.getElementById('tabContentChemical').classList.remove('hidden');
+        btnChem.className = 'py-2 px-3 border-b-2 border-kisan-600 text-kisan-700 flex items-center gap-1.5 whitespace-nowrap';
+      } else {
+        document.getElementById('tabContentPrevention').classList.remove('hidden');
+        btnPrev.className = 'py-2 px-3 border-b-2 border-kisan-600 text-kisan-700 flex items-center gap-1.5 whitespace-nowrap';
+      }
+    }
+
+    // Text to Speech (Voice Advisory in Farmer's regional language)
+    function toggleSpeech() {
+      if (!latestDiagnosisData) return;
+
+      if (isSpeaking) {
+        stopSpeech();
+        return;
+      }
+
+      const text = latestDiagnosisData.diagnosis.voice_summary;
+      const voiceCode = latestDiagnosisData.diagnosis.voice_code || 'hi-IN';
+
+      if (!('speechSynthesis' in window)) {
+        alert('Voice synthesis is not supported on this browser.');
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+      speechUtterance = new SpeechSynthesisUtterance(text);
+      speechUtterance.lang = voiceCode;
+      speechUtterance.rate = 0.95; // Slightly slower for clear regional comprehension
+
+      // Match system voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const matchedVoice = voices.find(v => v.lang.startsWith(voiceCode.split('-')[0]));
+      if (matchedVoice) {
+        speechUtterance.voice = matchedVoice;
+      }
+
+      speechUtterance.onstart = () => {
+        isSpeaking = true;
+        document.getElementById('audioWave').classList.remove('hidden');
+        document.getElementById('voicePlayIcon').setAttribute('data-lucide', 'square');
+        lucide.createIcons();
+      };
+
+      speechUtterance.onend = () => {
+        stopSpeech();
+      };
+
+      speechUtterance.onerror = () => {
+        stopSpeech();
+      };
+
+      window.speechSynthesis.speak(speechUtterance);
+    }
+
+    function stopSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      isSpeaking = false;
+      document.getElementById('audioWave').classList.add('hidden');
+      document.getElementById('voicePlayIcon').setAttribute('data-lucide', 'volume-2');
+      lucide.createIcons();
+    }
+
+    function shareWhatsApp() {
+      if (!latestDiagnosisData) return;
+      const url = latestDiagnosisData.actions.whatsapp_share_url;
+      window.open(url, '_blank');
+    }
+
+    function openEncyclopediaModal() {
+      document.getElementById('encyclopediaModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeEncyclopediaModal() {
+      document.getElementById('encyclopediaModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
