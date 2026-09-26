@@ -27,3 +27,5 @@ wheels/
 htmlcov/
 .DS_Store
 Thumbs.db
+
+*.zip
