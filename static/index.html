@@ -128,8 +128,18 @@
         </div>
 
         <button onclick="openEncyclopediaModal()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 hover:text-kisan-700 bg-white border border-slate-200 hover:border-kisan-300 rounded-lg shadow-sm transition-all">
-          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i>
           <span>Crop Guide</span>
+        </button>
+
+        <button onclick="openShopLocatorModal('Melur')" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-lg shadow-sm transition-all">
+          <i data-lucide="store" class="w-4 h-4 text-amber-600"></i>
+          <span>Pesticide Shops</span>
+        </button>
+
+        <button onclick="toggleChatDrawer(true)" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-bold text-white bg-gradient-to-r from-kisan-600 to-emerald-700 hover:from-kisan-700 hover:to-emerald-800 rounded-lg shadow-sm shadow-kisan-600/30 transition-all">
+          <i data-lucide="bot" class="w-4 h-4"></i>
+          <span>AI Chatbot</span>
         </button>
       </div>
     </div>
@@ -396,6 +406,10 @@
               </div>
 
               <div class="flex items-center gap-2">
+                <button onclick="openShopLocatorModal()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-lg text-xs font-bold shadow-md transition transform active:scale-95">
+                  <i data-lucide="store" class="w-4 h-4 text-slate-900"></i>
+                  <span>दुकान खोजें (Find Shops)</span>
+                </button>
                 <button onclick="shareWhatsApp()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-500/30 hover:bg-emerald-500/50 text-white rounded-lg text-xs font-semibold border border-white/20 transition">
                   <i data-lucide="share-2" class="w-4 h-4"></i>
                   <span id="shareWhatsappLabel">Share WhatsApp</span>
@@ -488,6 +502,91 @@
               </div>
             </div>
 
+            <!-- Farmer Satisfaction Rating & Comment Section -->
+            <div id="satisfactionSection" class="mt-6 pt-5 border-t border-slate-200">
+              <div class="p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/60 rounded-2xl border border-emerald-200 shadow-sm space-y-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <h4 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                      <span class="p-1 bg-emerald-100 text-emerald-800 rounded-lg">
+                        <i data-lucide="message-square-heart" class="w-4 h-4"></i>
+                      </span>
+                      <span>क्या आप इस निदान से संतुष्ट हैं?</span>
+                    </h4>
+                    <p class="text-xs text-slate-500 mt-0.5">Are you satisfied with this disease diagnosis and remedy advisory?</p>
+                  </div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    किसान फीडबैक
+                  </span>
+                </div>
+
+                <!-- Satisfaction Status Buttons -->
+                <div class="space-y-1.5">
+                  <label class="text-xs font-semibold text-slate-700">आपकी संतुष्टि स्थिति (Satisfaction Level):</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="selectSatisfactionStatus('satisfied')" id="btnSatSatisfied" class="py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                      <span>😄</span>
+                      <span>संतुष्ट (Satisfied)</span>
+                    </button>
+                    <button type="button" onclick="selectSatisfactionStatus('neutral')" id="btnSatNeutral" class="py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
+                      <span>😐</span>
+                      <span>सामान्य (Neutral)</span>
+                    </button>
+                    <button type="button" onclick="selectSatisfactionStatus('unsatisfied')" id="btnSatUnsatisfied" class="py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
+                      <span>🙁</span>
+                      <span>असंतोष (Unsatisfied)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Star Rating Picker -->
+                <div class="flex items-center gap-3">
+                  <label class="text-xs font-semibold text-slate-700">रेटिंग (Rating):</label>
+                  <div class="flex items-center gap-1" id="starRatingContainer">
+                    <button type="button" onclick="setStarRating(1)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
+                    <button type="button" onclick="setStarRating(2)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
+                    <button type="button" onclick="setStarRating(3)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
+                    <button type="button" onclick="setStarRating(4)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
+                    <button type="button" onclick="setStarRating(5)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
+                  </div>
+                  <span id="starRatingLabel" class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">5.0 / 5</span>
+                </div>
+
+                <!-- Farmer Feedback Comment Box -->
+                <div class="space-y-1.5">
+                  <label for="feedbackCommentInput" class="text-xs font-semibold text-slate-700">
+                    टिप्पणी या अनुभव लिखें (Comment / Experience):
+                  </label>
+                  <textarea id="feedbackCommentInput" rows="2" placeholder="अपनी फसल की स्थिति या इस दवा से मिले परिणाम के बारे में लिखें (जैसे: नीम के तेल से 3 दिन में असर दिखा)..." class="w-full text-xs sm:text-sm p-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-kisan-500 focus:outline-none transition"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600">किसान का नाम (Farmer Name):</label>
+                    <input type="text" id="feedbackNameInput" placeholder="जैसे: रमेश पटेल" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold text-slate-600">स्थान / जिला (Village / District):</label>
+                    <input type="text" id="feedbackLocationInput" placeholder="जैसे: करनाल, हरियाणा" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-[11px] text-slate-500">आपकी समीक्षा अन्य किसान भाइयों के काम आएगी।</span>
+                  <button type="button" onclick="submitFarmerFeedback()" id="btnSubmitFeedback" class="inline-flex items-center gap-1.5 px-4 py-2 bg-kisan-600 hover:bg-kisan-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>समीक्षा भेजें (Submit)</span>
+                  </button>
+                </div>
+
+                <!-- Submission Success Banner -->
+                <div id="feedbackSuccessAlert" class="hidden p-3 bg-emerald-100/90 border border-emerald-300 text-emerald-900 rounded-xl text-xs sm:text-sm flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-5 h-5 text-emerald-700 flex-shrink-0"></i>
+                  <span><strong>धन्यवाद किसान भाई!</strong> आपकी समीक्षा और संतुष्टि फीडबैक सफलतापूर्वक दर्ज कर ली गई है।</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -495,6 +594,44 @@
       </div>
 
     </div>
+
+    <!-- Farmer Community Reviews & Satisfaction Metrics Section -->
+    <section id="communityFeedbackSection" class="mt-12 space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-7 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="p-1.5 bg-amber-100 text-amber-800 rounded-xl">
+                <i data-lucide="award" class="w-5 h-5"></i>
+              </span>
+              <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
+                किसान संतुष्टि एवं सामुदायिक समीक्षाएं (Farmer Community Reviews)
+              </h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              देशभर के जागरूक किसानों द्वारा KisanDr AI के निदान व उपचार पर वास्तविक अनुभव
+            </p>
+          </div>
+
+          <!-- Satisfaction Metrics Badges -->
+          <div class="flex items-center gap-3">
+            <div class="text-center px-3.5 py-2 bg-emerald-50 border border-emerald-200 rounded-xl">
+              <div id="statSatRate" class="text-xl font-extrabold text-emerald-700">98%</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-900">संतुष्ट किसान</div>
+            </div>
+            <div class="text-center px-3.5 py-2 bg-amber-50 border border-amber-200 rounded-xl">
+              <div id="statAvgRating" class="text-xl font-extrabold text-amber-700">4.9 ★</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-amber-900">औसत रेटिंग</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews Dynamic Grid -->
+        <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically via /api/feedback -->
+        </div>
+      </div>
+    </section>
 
   </main>
 
@@ -582,6 +719,105 @@
       <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
         <button onclick="closeEncyclopediaModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-900 transition">
           Close Guide
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pesticide & Fertilizer Shop Locator Modal -->
+  <div id="shopsModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-amber-200 border border-white/20">
+            <i data-lucide="store" class="w-6 h-6 text-amber-200"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-extrabold flex items-center gap-2">
+              <span>निकटतम कीटनाशक व खाद विक्रेता (Agro Shops)</span>
+              <span class="text-[10px] bg-amber-400/30 text-amber-100 font-bold px-2 py-0.5 rounded-full border border-amber-300/40">लाइसेंसी दुकान</span>
+            </h3>
+            <p class="text-xs text-amber-100">Find licensed pesticide, fertilizer & bio-input stores near your farm</p>
+          </div>
+        </div>
+        <button onclick="closeShopLocatorModal()" class="p-1.5 text-amber-100 hover:text-white hover:bg-white/10 rounded-xl transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Search Bar & Location Chips -->
+      <div class="p-4 bg-amber-50/70 border-b border-amber-200/80 space-y-3">
+        <form onsubmit="event.preventDefault(); searchPesticideShops();" class="flex gap-2">
+          <div class="relative flex-1">
+            <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+            <input 
+              type="text" 
+              id="shopSearchInput" 
+              value="Melur" 
+              placeholder="शहर, कस्बा, गांव या पता लिखें (उदा. Melur, Madurai, Guntur)..."
+              class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none shadow-2xs"
+            >
+          </div>
+          <button 
+            type="submit" 
+            id="btnSearchShops"
+            class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 flex-shrink-0"
+          >
+            <i data-lucide="search" class="w-4 h-4"></i>
+            <span>खोजें (Search)</span>
+          </button>
+        </form>
+
+        <!-- Quick Town Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
+          <span class="text-[11px] font-bold text-slate-500 flex-shrink-0 flex items-center gap-1">
+            <i data-lucide="navigation" class="w-3 h-3 text-amber-600"></i>
+            त्वरित स्थान:
+          </span>
+          <button onclick="setShopSearchLocation('Melur')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Melur (மேலூர்)
+          </button>
+          <button onclick="setShopSearchLocation('Madurai')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Madurai (மதுரை)
+          </button>
+          <button onclick="setShopSearchLocation('Guntur')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Guntur
+          </button>
+          <button onclick="setShopSearchLocation('Karnal')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Karnal
+          </button>
+          <button onclick="setShopSearchLocation('Nashik')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Nashik
+          </button>
+          <button onclick="setShopSearchLocation('Anand')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-amber-100 text-slate-800 font-semibold rounded-full border border-amber-200 shadow-2xs">
+            📍 Anand
+          </button>
+        </div>
+
+        <!-- Disease & Cure Context Notice -->
+        <div id="shopDiseaseNotice" class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs flex items-center justify-between">
+          <div class="flex items-center gap-2 text-emerald-950 font-medium">
+            <i data-lucide="shield-plus" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+            <span>उपचार दवाएं: <strong id="shopNoticeMeds" class="text-emerald-900">Mancozeb 75% WP, Copper Oxychloride, Neem Oil</strong></span>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">स्टॉक में उपलब्ध</span>
+        </div>
+      </div>
+
+      <!-- Shop Results Scroll Area -->
+      <div id="shopsListContainer" class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 bg-slate-50/60">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3.5 border-t border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
+        <a id="googleMapsHubLink" href="https://www.google.com/maps/search/pesticide+fertilizer+shop+Melur" target="_blank" class="inline-flex items-center gap-1.5 font-bold text-amber-700 hover:text-amber-900 hover:underline">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span>Google Maps पर सभी नजदीकी खाद-दवा दुकानें देखें</span>
+        </a>
+        <button onclick="closeShopLocatorModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-semibold transition">
+          बंद करें (Close)
         </button>
       </div>
     </div>
@@ -906,6 +1142,603 @@
     function closeEncyclopediaModal() {
       document.getElementById('encyclopediaModal').classList.add('hidden');
     }
+
+    // -------------------------------------------------------------
+    // Farmer Satisfaction & Comment System (Diagnosis Results)
+    // -------------------------------------------------------------
+    let currentSatisfactionStatus = 'satisfied';
+    let currentStarRating = 5;
+
+    function selectSatisfactionStatus(status) {
+      currentSatisfactionStatus = status;
+      const btnSat = document.getElementById('btnSatSatisfied');
+      const btnNeu = document.getElementById('btnSatNeutral');
+      const btnUns = document.getElementById('btnSatUnsatisfied');
+
+      // Reset styles
+      [btnSat, btnNeu, btnUns].forEach(b => {
+        b.className = 'py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all';
+      });
+
+      if (status === 'satisfied') {
+        btnSat.className = 'py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm';
+        setStarRating(5);
+      } else if (status === 'neutral') {
+        btnNeu.className = 'py-2 px-3 rounded-xl border border-amber-500 bg-amber-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm';
+        setStarRating(3);
+      } else {
+        btnUns.className = 'py-2 px-3 rounded-xl border border-rose-500 bg-rose-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm';
+        setStarRating(1);
+      }
+    }
+
+    function setStarRating(rating) {
+      currentStarRating = rating;
+      const stars = document.querySelectorAll('.star-btn');
+      stars.forEach((btn, idx) => {
+        if (idx < rating) {
+          btn.className = 'star-btn text-amber-400 hover:scale-110 transition';
+          btn.innerHTML = '<i data-lucide="star" class="w-5 h-5 fill-current"></i>';
+        } else {
+          btn.className = 'star-btn text-slate-300 hover:scale-110 transition';
+          btn.innerHTML = '<i data-lucide="star" class="w-5 h-5"></i>';
+        }
+      });
+      document.getElementById('starRatingLabel').textContent = `${rating}.0 / 5`;
+      lucide.createIcons();
+    }
+
+    async function submitFarmerFeedback() {
+      const commentInput = document.getElementById('feedbackCommentInput');
+      const nameInput = document.getElementById('feedbackNameInput');
+      const locationInput = document.getElementById('feedbackLocationInput');
+      const comment = commentInput.value.trim();
+
+      if (!comment) {
+        alert('कृपया अपनी टिप्पणी या अनुभव लिखें (Please write your comment before submitting).');
+        commentInput.focus();
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitFeedback');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>दर्ज हो रहा है...</span>';
+      lucide.createIcons();
+
+      const crop = latestDiagnosisData ? latestDiagnosisData.diagnosis.crop : document.getElementById('cropSelect').value;
+      const disease = latestDiagnosisData ? latestDiagnosisData.diagnosis.disease_name_localized : 'General Consultation';
+
+      try {
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            farmer_name: nameInput.value.trim() || 'Kisan Mitra (किसान भाई)',
+            location: locationInput.value.trim() || 'India',
+            crop: crop || 'General',
+            disease: disease || 'General',
+            satisfaction: currentSatisfactionStatus,
+            rating: currentStarRating,
+            comment: comment
+          })
+        });
+
+        if (!res.ok) throw new Error('Feedback submission failed');
+
+        // Show success alert
+        document.getElementById('feedbackSuccessAlert').classList.remove('hidden');
+        commentInput.value = '';
+        lucide.createIcons();
+
+        // Refresh community wall
+        loadCommunityFeedback();
+
+      } catch (err) {
+        console.error(err);
+        alert('फीडबैक दर्ज करने में समस्या आई। कृपया पुनः प्रयास करें।');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> <span>समीक्षा भेजें (Submit)</span>';
+        lucide.createIcons();
+      }
+    }
+
+    async function loadCommunityFeedback() {
+      try {
+        const res = await fetch('/api/feedback?limit=6');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update stats
+        if (data.satisfaction_rate_percent !== undefined) {
+          document.getElementById('statSatRate').textContent = `${data.satisfaction_rate_percent}%`;
+        }
+        if (data.average_rating !== undefined) {
+          document.getElementById('statAvgRating').textContent = `${data.average_rating} ★`;
+        }
+
+        // Render review cards
+        const grid = document.getElementById('reviewsGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        (data.reviews || []).forEach(rev => {
+          const card = document.createElement('div');
+          card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-emerald-300 transition-all flex flex-col justify-between space-y-3';
+          
+          let starsHtml = '';
+          for (let i = 1; i <= 5; i++) {
+            starsHtml += i <= rev.rating 
+              ? '<span class="text-amber-400">★</span>' 
+              : '<span class="text-slate-300">★</span>';
+          }
+
+          let satBadge = rev.satisfaction === 'satisfied'
+            ? '<span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">संतुष्ट किसान</span>'
+            : (rev.satisfaction === 'neutral'
+              ? '<span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">सामान्य</span>'
+              : '<span class="text-[10px] font-bold text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full">सुझाव</span>');
+
+          card.innerHTML = `
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
+                    ${(rev.farmer_name || 'K')[0]}
+                  </div>
+                  <span>${rev.farmer_name}</span>
+                </div>
+                ${satBadge}
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <div>${starsHtml}</div>
+                <span class="text-[11px] text-slate-400">&bull; ${rev.location || 'India'}</span>
+              </div>
+              <p class="text-xs text-slate-600 italic">"${rev.comment}"</p>
+            </div>
+            <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span>फसल: <strong class="text-slate-700">${rev.crop}</strong></span>
+              <span>${rev.date || 'हाल ही में'}</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+      } catch (err) {
+        console.warn("Failed to load feedback", err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Pesticide & Fertilizer Shop Locator Service
+    // -------------------------------------------------------------
+    function openShopLocatorModal(loc) {
+      const modal = document.getElementById('shopsModal');
+      modal.classList.remove('hidden');
+      
+      const searchInput = document.getElementById('shopSearchInput');
+      if (loc) {
+        searchInput.value = loc;
+      }
+      
+      // Update cure notice if diagnosis data exists
+      if (latestDiagnosisData) {
+        const diag = latestDiagnosisData.diagnosis;
+        const remedies = (latestDiagnosisData.advisory.chemical_treatments || []).slice(0, 2)
+          .concat((latestDiagnosisData.advisory.organic_remedies || []).slice(0, 1));
+        if (remedies.length > 0) {
+          document.getElementById('shopNoticeMeds').textContent = remedies.map(r => r.split('@')[0].split(':')[0].trim()).join(', ');
+        }
+      }
+      
+      searchPesticideShops(searchInput.value);
+      lucide.createIcons();
+    }
+
+    function closeShopLocatorModal() {
+      document.getElementById('shopsModal').classList.add('hidden');
+    }
+
+    function setShopSearchLocation(loc) {
+      document.getElementById('shopSearchInput').value = loc;
+      searchPesticideShops(loc);
+    }
+
+    async function searchPesticideShops(locationOverride) {
+      const searchLoc = locationOverride || document.getElementById('shopSearchInput').value.trim() || 'Melur';
+      const container = document.getElementById('shopsListContainer');
+      const btn = document.getElementById('btnSearchShops');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>खोज रहे हैं...</span>';
+      container.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs sm:text-sm"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-600"></i> नजदीकी खाद-कीटनाशक दुकानें खोजी जा रही हैं...</div>';
+      lucide.createIcons();
+
+      const crop = latestDiagnosisData ? latestDiagnosisData.diagnosis.crop : document.getElementById('cropSelect').value;
+      const diseaseId = latestDiagnosisData ? latestDiagnosisData.diagnosis.disease_id : '';
+      const diseaseName = latestDiagnosisData ? latestDiagnosisData.diagnosis.disease_name_localized : '';
+
+      try {
+        const url = `/api/shops?location=${encodeURIComponent(searchLoc)}&crop=${encodeURIComponent(crop || '')}&disease_id=${encodeURIComponent(diseaseId || '')}&disease_name=${encodeURIComponent(diseaseName || '')}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Shops query failed');
+
+        const data = await res.json();
+        renderShops(data);
+
+        // Update Google Maps hub link
+        const mapsLink = document.getElementById('googleMapsHubLink');
+        if (mapsLink && data.google_maps_hub_url) {
+          mapsLink.href = data.google_maps_hub_url;
+          mapsLink.querySelector('span').textContent = `Google Maps पर ${data.search_location} की सभी दुकानें देखें`;
+        }
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<div class="p-6 text-center text-rose-600 text-xs">दुकानें लोड करने में समस्या आई। कृपया पुनः प्रयास करें।</div>';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="search" class="w-4 h-4"></i> <span>खोजें (Search)</span>';
+        lucide.createIcons();
+      }
+    }
+
+    function renderShops(data) {
+      const container = document.getElementById('shopsListContainer');
+      container.innerHTML = '';
+
+      if (!data.shops || data.shops.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs sm:text-sm">कोई दुकान नहीं मिली। अन्य शहर या पता लिखकर खोजें।</div>`;
+        return;
+      }
+
+      data.shops.forEach(shop => {
+        const card = document.createElement('div');
+        card.className = 'p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-400 transition-all space-y-3.5';
+
+        // Verified / Govt Badge
+        const badge = shop.pacs_government 
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">🏛️ सहकारी / सरकारी (Govt PACCS)</span>'
+          : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">✅ सत्यापित डीलर (Verified)</span>';
+
+        // Remedies tags
+        let medsHtml = '';
+        (shop.remedies_in_stock || []).slice(0, 3).forEach(med => {
+          medsHtml += `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-900 border border-emerald-200">🌿 ${med}</span>`;
+        });
+
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm sm:text-base font-extrabold text-slate-900">${shop.name}</h4>
+                ${badge}
+              </div>
+              <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-600 flex-shrink-0"></i>
+                <span>${shop.address}</span>
+              </p>
+            </div>
+            <div class="flex items-center gap-2 sm:flex-col sm:items-end flex-shrink-0 text-xs font-semibold">
+              <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold">${shop.rating} ★</span>
+              <span class="text-[11px] text-slate-500">${shop.timing || '8 AM - 8 PM'}</span>
+            </div>
+          </div>
+
+          <!-- In-Stock Cure Medicines -->
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1.5">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1">
+              <i data-lucide="package-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+              बीमारी के उपचार हेतु उपलब्ध दवाएं (Available Cures in Stock):
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${medsHtml}
+            </div>
+          </div>
+
+          <!-- Contact & Directions Action Buttons -->
+          <div class="pt-1 flex flex-wrap items-center gap-2">
+            <a href="tel:${shop.phone}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition shadow-xs">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>कॉल करें (${shop.phone})</span>
+            </a>
+            <a href="${shop.whatsapp_url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+              <span>WhatsApp पर पूछें</span>
+            </a>
+            <a href="${shop.google_maps_url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition shadow-xs">
+              <i data-lucide="navigation-2" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>दिशा निर्देश (Directions)</span>
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------
+    // Agri-AI Chatbot Assistant
+    // -------------------------------------------------------------
+    let chatConversationHistory = [];
+
+    function toggleChatDrawer(show) {
+      const drawer = document.getElementById('chatDrawer');
+      const launcher = document.getElementById('chatLauncherBtn');
+      if (show) {
+        drawer.classList.remove('hidden');
+        launcher.classList.add('hidden');
+        document.getElementById('chatInput').focus();
+      } else {
+        drawer.classList.add('hidden');
+        launcher.classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    function sendSuggestion(text) {
+      document.getElementById('chatInput').value = text;
+      sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const query = input.value.trim();
+      if (!query) return;
+
+      input.value = '';
+      input.focus();
+
+      // Add user message to UI
+      appendChatMessage('user', query);
+
+      // Show typing indicator
+      const typing = document.getElementById('chatTypingIndicator');
+      typing.classList.remove('hidden');
+      scrollChatToBottom();
+
+      const crop = latestDiagnosisData ? latestDiagnosisData.diagnosis.crop : document.getElementById('cropSelect').value;
+      const diseaseId = latestDiagnosisData ? latestDiagnosisData.diagnosis.disease_id : null;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: query,
+            lang: currentLanguage,
+            crop: crop,
+            disease_id: diseaseId,
+            history: chatConversationHistory
+          })
+        });
+
+        if (!res.ok) throw new Error('Chatbot request failed');
+
+        const data = await res.json();
+        typing.classList.add('hidden');
+
+        // Add to conversation history
+        chatConversationHistory.push({ role: 'user', content: query });
+        chatConversationHistory.push({ role: 'assistant', content: data.reply });
+
+        // Add assistant message to UI
+        appendChatMessage('assistant', data.reply, data.source, data.satisfied_prompt);
+
+      } catch (err) {
+        console.error(err);
+        typing.classList.add('hidden');
+        appendChatMessage('assistant', 'क्षमा करें, सर्वर से संपर्क नहीं हो पाया। कृपया पुनः प्रयास करें।');
+      }
+    }
+
+    function appendChatMessage(role, text, source, satisfiedPrompt) {
+      const messagesContainer = document.getElementById('chatMessages');
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
+
+      if (role === 'user') {
+        msgDiv.innerHTML = `
+          <div class="max-w-[85%] bg-kisan-600 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-xs sm:text-sm shadow-sm">
+            <p>${escapeHtml(text)}</p>
+          </div>
+        `;
+      } else {
+        // Assistant Message with markdown parsing, TTS, and satisfaction prompt
+        const formatted = formatMarkdownText(text);
+        const safeText = text.replace(/["'\\]/g, ' ');
+
+        msgDiv.innerHTML = `
+          <div class="max-w-[90%] bg-slate-100 border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs sm:text-sm space-y-2 shadow-sm">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold border-b border-slate-200/80 pb-1.5">
+              <span class="flex items-center gap-1.5 text-emerald-800">
+                <i data-lucide="sprout" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>${source || 'KisanDr AI कृषि मित्र'}</span>
+              </span>
+              <button onclick="speakChatAnswer(this, \`${safeText}\`)" class="text-slate-500 hover:text-emerald-700 p-1 rounded transition" title="Listen voice">
+                <i data-lucide="volume-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="chat-content leading-relaxed space-y-1">
+              ${formatted}
+            </div>
+            <!-- Chat Response Satisfaction Indicator -->
+            <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
+              <span>संतुष्ट हैं?</span>
+              <div class="flex items-center gap-1">
+                <button onclick="rateChatAnswer(this, true)" class="px-2 py-0.5 rounded hover:bg-emerald-100 hover:text-emerald-800 transition flex items-center gap-0.5">
+                  <span>👍 हाँ</span>
+                </button>
+                <button onclick="rateChatAnswer(this, false)" class="px-2 py-0.5 rounded hover:bg-rose-100 hover:text-rose-800 transition flex items-center gap-0.5">
+                  <span>👎 नहीं</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      messagesContainer.appendChild(msgDiv);
+      scrollChatToBottom();
+      lucide.createIcons();
+    }
+
+    function rateChatAnswer(btn, isHelpful) {
+      const parent = btn.parentElement;
+      if (isHelpful) {
+        parent.innerHTML = '<span class="text-emerald-700 font-bold">धन्यवाद! फीडबैक दर्ज हुआ।</span>';
+      } else {
+        parent.innerHTML = '<span class="text-slate-500 font-medium">सुझाव के लिए धन्यवाद।</span>';
+      }
+    }
+
+    function speakChatAnswer(btn, text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = currentLanguage === 'hi' ? 'hi-IN' : (currentLanguage === 'te' ? 'te-IN' : (currentLanguage === 'ta' ? 'ta-IN' : 'en-IN'));
+      utter.rate = 0.95;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function scrollChatToBottom() {
+      const container = document.getElementById('chatMessages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    function formatMarkdownText(text) {
+      let html = escapeHtml(text);
+      // Bold **text**
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Bullets
+      html = html.replace(/\n• /g, '<br>&bull; ');
+      html = html.replace(/\n- /g, '<br>&bull; ');
+      // Line breaks
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
+    // Auto-load reviews on start
+    document.addEventListener("DOMContentLoaded", () => {
+      loadCommunityFeedback();
+    });
   </script>
+
+  <!-- ======================================================== -->
+  <!-- FLOATING AI AGRI-CHATBOT WIDGET -->
+  <!-- ======================================================== -->
+  
+  <!-- Floating Launcher Button -->
+  <button id="chatLauncherBtn" onclick="toggleChatDrawer(true)" class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-kisan-600 via-emerald-600 to-emerald-700 hover:from-kisan-700 hover:to-emerald-800 text-white font-bold text-sm rounded-full shadow-2xl hover:shadow-kisan-600/50 transition-all transform hover:-translate-y-1 focus:outline-none ring-4 ring-emerald-500/20">
+    <div class="relative">
+      <i data-lucide="bot" class="w-5 h-5 text-amber-300"></i>
+      <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
+      <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full"></span>
+    </div>
+    <span>कृषि मित्र AI</span>
+  </button>
+
+  <!-- Expandable Chatbot Drawer Window -->
+  <div id="chatDrawer" class="hidden fixed bottom-5 right-4 sm:right-6 z-50 w-[calc(100%-2rem)] sm:w-[420px] h-[580px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden ring-1 ring-slate-900/5">
+    
+    <!-- Chat Drawer Header -->
+    <div class="p-4 bg-gradient-to-r from-emerald-800 via-kisan-700 to-emerald-900 text-white flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-emerald-200">
+          <i data-lucide="sprout" class="w-6 h-6 text-amber-300"></i>
+          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-emerald-900 rounded-full"></span>
+        </div>
+        <div>
+          <h3 class="text-sm font-extrabold flex items-center gap-1.5">
+            <span>KisanDr AI कृषि मित्र</span>
+            <span class="text-[10px] bg-emerald-500/40 text-emerald-100 font-semibold px-2 py-0.5 rounded-full border border-emerald-400/30">ऑनलाइन</span>
+          </h3>
+          <p class="text-[11px] text-emerald-200">AI Agricultural Agronomist & Advisory</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button onclick="toggleChatDrawer(false)" class="p-1.5 text-emerald-200 hover:text-white hover:bg-white/10 rounded-xl transition">
+          <i data-lucide="minus" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Suggested Quick Questions Pills -->
+    <div class="p-2.5 bg-emerald-50/70 border-b border-emerald-100 overflow-x-auto flex items-center gap-2 text-xs no-scrollbar">
+      <span class="text-[10px] font-bold uppercase text-emerald-900 flex-shrink-0 flex items-center gap-1">
+        <i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i>
+        सुझाव:
+      </span>
+      <button onclick="sendSuggestion('नीम का स्प्रे कैसे तैयार करें?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
+        🌱 नीम का स्प्रे
+      </button>
+      <button onclick="sendSuggestion('क्या बारिश के मौसम में दवा छिड़क सकते हैं?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
+        🌧️ बारिश में छिड़काव
+      </button>
+      <button onclick="sendSuggestion('मैंकोजेब की सही मात्रा क्या है?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
+        🧪 मैंकोजेब डोज़
+      </button>
+      <button onclick="sendSuggestion('टमाटर में पत्ती मरोड़ रोग का इलाज क्या है?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
+        🍅 पत्ती मरोड़ इलाज
+      </button>
+    </div>
+
+    <!-- Chat Messages Scroll Area -->
+    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/50">
+      <!-- Welcome Message -->
+      <div class="flex justify-start">
+        <div class="max-w-[90%] bg-slate-100 border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs sm:text-sm space-y-2 shadow-sm">
+          <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold border-b border-slate-200/80 pb-1.5">
+            <span class="flex items-center gap-1.5 text-emerald-800">
+              <i data-lucide="sprout" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span>KisanDr AI कृषि मित्र</span>
+            </span>
+          </div>
+          <p class="leading-relaxed">
+            👨‍🌾 <strong>राम राम किसान भाई!</strong> मैं आपका एआई कृषि वैज्ञानिक सहायक हूँ।<br>
+            आप मुझसे किसी भी फसल की बीमारी, जैविक स्प्रे (नीम, छाछ, जीवामृत), रासायनिक दवा की सही मात्रा या खाद के बारे में पूछ सकते हैं।
+          </p>
+        </div>
+      </div>
+
+      <!-- Typing Indicator (Hidden by default) -->
+      <div id="chatTypingIndicator" class="hidden flex justify-start">
+        <div class="bg-slate-100 border border-slate-200 rounded-2xl rounded-tl-none px-4 py-2.5 text-xs text-slate-500 flex items-center gap-1.5">
+          <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce"></span>
+          <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+          <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+          <span class="ml-1 text-[11px] font-medium text-emerald-800">कृषि मित्र लिख रहे हैं...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input Bar -->
+    <div class="p-3 bg-white border-t border-slate-200">
+      <form onsubmit="event.preventDefault(); sendChatMessage();" class="flex items-center gap-2">
+        <input 
+          type="text" 
+          id="chatInput" 
+          placeholder="फसल संबंधी कोई भी सवाल पूछें (उदा. नीम का स्प्रे)..." 
+          autocomplete="off"
+          class="flex-1 text-xs sm:text-sm px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl focus:ring-2 focus:ring-kisan-500 focus:bg-white focus:outline-none transition"
+        >
+        <button 
+          type="submit" 
+          class="p-2.5 bg-kisan-600 hover:bg-kisan-700 text-white rounded-xl shadow-md transition flex items-center justify-center flex-shrink-0"
+        >
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+
+  </div>
+
 </body>
 </html>

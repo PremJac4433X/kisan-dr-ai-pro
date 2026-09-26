@@ -158,5 +158,72 @@ class TestAgriCureAI(unittest.TestCase):
         self.assertIn("Cash Crops & Pulses", categories)
         self.assertGreaterEqual(len(data["crops"]), 25)
 
+    def test_chatbot_endpoint(self):
+        """Test agricultural chatbot response in Hindi and English."""
+        # Query 1: Neem spray question in Hindi
+        res = client.post("/api/chat", json={
+            "message": "नीम का स्प्रे कैसे तैयार करें?",
+            "lang": "hi"
+        })
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("reply", data)
+        self.assertIn("नीम", data["reply"])
+        self.assertGreater(len(data.get("suggestions", [])), 0)
+
+        # Query 2: Rain spray guidelines in English
+        res_en = client.post("/api/chat", json={
+            "message": "Can I spray in rainy season?",
+            "lang": "en"
+        })
+        self.assertEqual(res_en.status_code, 200)
+        self.assertIn("Monsoon", res_en.json()["reply"])
+
+    def test_feedback_system(self):
+        """Test submitting farmer satisfaction and retrieving community feedback."""
+        # 1. Submit review
+        post_res = client.post("/api/feedback", json={
+            "farmer_name": "Kisan Harish",
+            "location": "Varanasi, UP",
+            "crop": "Tomato",
+            "disease": "Early Blight",
+            "satisfaction": "satisfied",
+            "rating": 5,
+            "comment": "ट्राइकोडर्मा और तांबे के छिड़काव से फसल पूरी तरह स्वस्थ हो गई।"
+        })
+        self.assertEqual(post_res.status_code, 200)
+        self.assertEqual(post_res.json()["status"], "success")
+
+        # 2. Retrieve feedback
+        get_res = client.get("/api/feedback")
+        self.assertEqual(get_res.status_code, 200)
+        feed_data = get_res.json()
+        self.assertIn("satisfaction_rate_percent", feed_data)
+        self.assertIn("reviews", feed_data)
+        self.assertEqual(feed_data["reviews"][0]["farmer_name"], "Kisan Harish")
+
+    def test_shops_search_melur(self):
+        """Test searching shops in Melur returns curated agro stores with remedies."""
+        res = client.get("/api/shops?location=Melur&disease_id=tomato_early_blight&crop=Tomato")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["status"], "success")
+        self.assertGreaterEqual(data["total_shops"], 2)
+        melur_names = [s["name"] for s in data["shops"]]
+        self.assertTrue(any("Meenakshi" in name or "Melur" in name for name in melur_names))
+        # Verify directions and WhatsApp links are formed
+        first_shop = data["shops"][0]
+        self.assertIn("google_maps_url", first_shop)
+        self.assertIn("whatsapp_url", first_shop)
+        self.assertIn("remedies_in_stock", first_shop)
+
+    def test_shops_search_dynamic_address(self):
+        """Test searching any custom village or town address."""
+        res = client.get("/api/shops?location=Usilampatti")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertGreaterEqual(data["total_shops"], 1)
+        self.assertIn("Usilampatti", data["shops"][0]["address"])
+
 if __name__ == "__main__":
     unittest.main()

@@ -10,18 +10,33 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import Optional, List, Dict, Any
+from pydantic import BaseModel, Field
 
 from app.disease_db import CROP_DISEASES, CROPS_LIST, CROPS_CATALOG, get_disease_info
 from app.translations import LANGUAGES, UI_STRINGS, get_localized_disease_profile, get_ui_labels
 from app.ml_engine import classifier
 from app.weather_service import calculate_epidemic_risk
+from app.chatbot import answer_farmer_query
+from app.feedback_service import add_feedback, get_all_feedback
+from app.shops_service import find_agro_shops
 
 app = FastAPI(
     title="KisanDr AI – Intelligent Crop Health & Multilingual Advisory Platform",
     description="Empowering smallholder farmers with early disease diagnosis and regional advisory.",
     version="1.0.0"
 )
+
+# Startup hook to generate sample images if missing
+@app.on_event("startup")
+async def ensure_sample_images():
+    samples_dir = os.path.join(STATIC_DIR, "samples")
+    if not os.path.exists(samples_dir) or not os.listdir(samples_dir):
+        try:
+            from app.create_samples import create_sample_leaves
+            create_sample_leaves(samples_dir)
+        except Exception as e:
+            print(f"Sample generation notice: {e}")
 
 # Enable CORS for cross-origin or mobile web wrappers
 app.add_middleware(
@@ -210,6 +225,103 @@ async def get_disease_detail(disease_id: str, lang: str = Query("hi")):
         "base_info": base_info,
         "localized": localized
     }
+
+# -------------------------------------------------------------
+# Agri-Chatbot & Farmer Assistant Endpoints
+# -------------------------------------------------------------
+
+class ChatMessageRequest(BaseModel):
+    message: str = Field(..., description="Farmer question or query")
+    lang: str = Field("hi", description="Language code (hi, te, ta, kn, mr, bn, gu, pa, en)")
+    crop: Optional[str] = Field(None, description="Optional target crop context")
+    disease_id: Optional[str] = Field(None, description="Optional diagnosed disease context")
+    history: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Chat conversation history")
+
+@app.post("/api/chat")
+async def chat_with_agri_expert(req: ChatMessageRequest):
+    """
+    Intelligent Agricultural Chatbot endpoint.
+    Answers farming, disease management, and organic spray questions in real-time.
+    """
+    if not req.message.strip():
+        raise HTTPException(status_code=400, detail="Query message cannot be empty")
+    
+    response = answer_farmer_query(
+        message=req.message,
+        lang=req.lang,
+        crop=req.crop,
+        disease_id=req.disease_id,
+        history=req.history
+    )
+    return response
+
+# -------------------------------------------------------------
+# Farmer Satisfaction & Comment System Endpoints
+# -------------------------------------------------------------
+
+class FeedbackRequest(BaseModel):
+    farmer_name: Optional[str] = Field("Farmer", description="Farmer name")
+    location: Optional[str] = Field("India", description="Village or district")
+    crop: Optional[str] = Field("General", description="Crop concerned")
+    disease: Optional[str] = Field("General Health", description="Disease or diagnosis diagnosed")
+    satisfaction: str = Field("satisfied", description="Satisfaction status: satisfied, neutral, unsatisfied")
+    rating: int = Field(5, ge=1, le=5, description="Star rating from 1 to 5")
+    comment: str = Field(..., description="Farmer review, observation, or comment")
+
+@app.post("/api/feedback")
+async def submit_farmer_feedback(req: FeedbackRequest):
+    """
+    Record farmer satisfaction rating and experience comment.
+    """
+    if not req.comment.strip():
+        raise HTTPException(status_code=400, detail="Feedback comment cannot be empty")
+    
+    entry = add_feedback(
+        farmer_name=req.farmer_name or "Farmer",
+        location=req.location or "India",
+        crop=req.crop or "General",
+        disease=req.disease or "General Health",
+        satisfaction=req.satisfaction,
+        rating=req.rating,
+        comment=req.comment
+    )
+    return {"status": "success", "message": "Feedback submitted successfully! / आपकी समीक्षा सफलतापूर्वक दर्ज कर ली गई है।", "entry": entry}
+
+@app.get("/api/feedback")
+async def get_farmer_feedback(limit: int = Query(20, ge=1, le=100)):
+    """
+    Get community farmer satisfaction metrics and recent testimonials.
+    """
+    return get_all_feedback(limit=limit)
+
+# -------------------------------------------------------------
+# Agro-Chemical & Pesticide Shop Locator Endpoints
+# -------------------------------------------------------------
+
+@app.get("/api/shops")
+async def get_nearby_pesticide_shops(
+    location: str = Query("Melur", description="City, town, district, or address (e.g. Melur, Madurai, Karnal)"),
+    crop: Optional[str] = Query(None, description="Crop name"),
+    disease_id: Optional[str] = Query(None, description="Disease ID for cure matching"),
+    disease_name: Optional[str] = Query(None, description="Disease name")
+):
+    """
+    Finds nearest licensed fertilizer and pesticide shops stocking remedies to cure crop disease.
+    Supports Melur, Madurai, and all towns/addresses nationwide.
+    """
+    remedies = []
+    if disease_id and disease_id in CROP_DISEASES:
+        d = CROP_DISEASES[disease_id]
+        remedies = (d.get("chemical_remedy", [])[:2]) + (d.get("organic_remedy", [])[:2])
+
+    result = find_agro_shops(
+        query_location=location,
+        crop=crop,
+        disease_id=disease_id,
+        disease_name=disease_name,
+        recommended_meds=remedies if remedies else None
+    )
+    return result
 
 if __name__ == "__main__":
     import uvicorn
