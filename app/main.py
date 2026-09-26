@@ -84,7 +84,7 @@ async def get_languages():
     return {"languages": LANGUAGES}
 
 @app.get("/api/ui-labels")
-async def get_labels(lang: str = Query("hi")):
+async def get_labels(lang: str = Query("en")):
     """Returns localized interface labels."""
     return {"labels": get_ui_labels(lang), "lang": lang}
 
@@ -102,7 +102,7 @@ async def diagnose_crop_disease(
     file: Optional[UploadFile] = File(None),
     sample_name: Optional[str] = Form(None),
     target_crop: Optional[str] = Form("auto"),
-    lang: str = Form("hi"),
+    lang: str = Form("en"),
     temp_c: Optional[float] = Form(26.0),
     humidity_pct: Optional[float] = Form(84.0),
     rainfall_mm: Optional[float] = Form(2.0)
@@ -214,7 +214,7 @@ async def diagnose_crop_disease(
     }
 
 @app.get("/api/disease/{disease_id}")
-async def get_disease_detail(disease_id: str, lang: str = Query("hi")):
+async def get_disease_detail(disease_id: str, lang: str = Query("en")):
     """Fetch complete encyclopedia detail for a specific crop disease."""
     if disease_id not in CROP_DISEASES:
         raise HTTPException(status_code=404, detail="Disease ID not found")
@@ -232,7 +232,7 @@ async def get_disease_detail(disease_id: str, lang: str = Query("hi")):
 
 class ChatMessageRequest(BaseModel):
     message: str = Field(..., description="Farmer question or query")
-    lang: str = Field("hi", description="Language code (hi, te, ta, kn, mr, bn, gu, pa, en)")
+    lang: str = Field("en", description="Language code (en, hi, te, ta, kn, mr, bn, gu, pa)")
     crop: Optional[str] = Field(None, description="Optional target crop context")
     disease_id: Optional[str] = Field(None, description="Optional diagnosed disease context")
     history: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Chat conversation history")

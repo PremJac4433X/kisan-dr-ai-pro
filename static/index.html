@@ -115,7 +115,8 @@
         <div class="relative flex items-center">
           <i data-lucide="languages" class="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none"></i>
           <select id="langSelect" onchange="changeLanguage(this.value)" class="pl-9 pr-8 py-2 bg-slate-100 hover:bg-slate-200/80 transition-colors border border-slate-300 text-slate-800 text-sm font-semibold rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none cursor-pointer">
-            <option value="hi" selected>🇮🇳 हिन्दी (Hindi)</option>
+            <option value="en" selected>🌐 English</option>
+            <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
             <option value="te">🇮🇳 తెలుగు (Telugu)</option>
             <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
             <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
@@ -123,23 +124,22 @@
             <option value="bn">🇮🇳 বাংলা (Bengali)</option>
             <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
             <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
-            <option value="en">🌐 English</option>
           </select>
         </div>
 
         <button onclick="openEncyclopediaModal()" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 hover:text-kisan-700 bg-white border border-slate-200 hover:border-kisan-300 rounded-lg shadow-sm transition-all">
           <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i>
-          <span>Crop Guide</span>
+          <span id="btnNavCropGuideText">Crop Guide</span>
         </button>
 
         <button onclick="openShopLocatorModal('Melur')" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-lg shadow-sm transition-all">
           <i data-lucide="store" class="w-4 h-4 text-amber-600"></i>
-          <span>Pesticide Shops</span>
+          <span id="btnNavPesticideShopsText">Pesticide Shops</span>
         </button>
 
         <button onclick="toggleChatDrawer(true)" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-bold text-white bg-gradient-to-r from-kisan-600 to-emerald-700 hover:from-kisan-700 hover:to-emerald-800 rounded-lg shadow-sm shadow-kisan-600/30 transition-all">
           <i data-lucide="bot" class="w-4 h-4"></i>
-          <span>AI Chatbot</span>
+          <span id="btnNavAIChatbotText">AI Chatbot</span>
         </button>
       </div>
     </div>
@@ -408,7 +408,7 @@
               <div class="flex items-center gap-2">
                 <button onclick="openShopLocatorModal()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-lg text-xs font-bold shadow-md transition transform active:scale-95">
                   <i data-lucide="store" class="w-4 h-4 text-slate-900"></i>
-                  <span>दुकान खोजें (Find Shops)</span>
+                  <span id="btnFindCureShopsText">Find Cure Shops</span>
                 </button>
                 <button onclick="shareWhatsApp()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-500/30 hover:bg-emerald-500/50 text-white rounded-lg text-xs font-semibold border border-white/20 transition">
                   <i data-lucide="share-2" class="w-4 h-4"></i>
@@ -511,37 +511,34 @@
                       <span class="p-1 bg-emerald-100 text-emerald-800 rounded-lg">
                         <i data-lucide="message-square-heart" class="w-4 h-4"></i>
                       </span>
-                      <span>क्या आप इस निदान से संतुष्ट हैं?</span>
+                      <span id="lblSatTitle">Are you satisfied with this diagnosis?</span>
                     </h4>
-                    <p class="text-xs text-slate-500 mt-0.5">Are you satisfied with this disease diagnosis and remedy advisory?</p>
+                    <p id="lblSatSubtitle" class="text-xs text-slate-500 mt-0.5">Are you satisfied with this disease diagnosis and remedy advisory?</p>
                   </div>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                    किसान फीडबैक
+                  <span id="badgeFarmerFeedback" class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    Farmer Feedback
                   </span>
                 </div>
 
                 <!-- Satisfaction Status Buttons -->
                 <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-700">आपकी संतुष्टि स्थिति (Satisfaction Level):</label>
+                  <label id="lblSatLevelPrompt" class="text-xs font-semibold text-slate-700">Satisfaction Level:</label>
                   <div class="grid grid-cols-3 gap-2">
                     <button type="button" onclick="selectSatisfactionStatus('satisfied')" id="btnSatSatisfied" class="py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                      <span>😄</span>
-                      <span>संतुष्ट (Satisfied)</span>
+                      <span id="txtSatSatisfied">😄 Satisfied</span>
                     </button>
                     <button type="button" onclick="selectSatisfactionStatus('neutral')" id="btnSatNeutral" class="py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
-                      <span>😐</span>
-                      <span>सामान्य (Neutral)</span>
+                      <span id="txtSatNeutral">😐 Neutral</span>
                     </button>
                     <button type="button" onclick="selectSatisfactionStatus('unsatisfied')" id="btnSatUnsatisfied" class="py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
-                      <span>🙁</span>
-                      <span>असंतोष (Unsatisfied)</span>
+                      <span id="txtSatUnsatisfied">🙁 Unsatisfied</span>
                     </button>
                   </div>
                 </div>
 
                 <!-- Star Rating Picker -->
                 <div class="flex items-center gap-3">
-                  <label class="text-xs font-semibold text-slate-700">रेटिंग (Rating):</label>
+                  <label id="lblRatingPrompt" class="text-xs font-semibold text-slate-700">Rating:</label>
                   <div class="flex items-center gap-1" id="starRatingContainer">
                     <button type="button" onclick="setStarRating(1)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
                     <button type="button" onclick="setStarRating(2)" class="star-btn text-amber-400 hover:scale-110 transition"><i data-lucide="star" class="w-5 h-5 fill-current"></i></button>
@@ -554,35 +551,35 @@
 
                 <!-- Farmer Feedback Comment Box -->
                 <div class="space-y-1.5">
-                  <label for="feedbackCommentInput" class="text-xs font-semibold text-slate-700">
-                    टिप्पणी या अनुभव लिखें (Comment / Experience):
+                  <label id="lblCommentPrompt" for="feedbackCommentInput" class="text-xs font-semibold text-slate-700">
+                    Comment / Experience:
                   </label>
-                  <textarea id="feedbackCommentInput" rows="2" placeholder="अपनी फसल की स्थिति या इस दवा से मिले परिणाम के बारे में लिखें (जैसे: नीम के तेल से 3 दिन में असर दिखा)..." class="w-full text-xs sm:text-sm p-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-kisan-500 focus:outline-none transition"></textarea>
+                  <textarea id="feedbackCommentInput" rows="2" placeholder="Share your experience or advice for other farmers (e.g. Neem spray worked in 3 days)..." class="w-full text-xs sm:text-sm p-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-kisan-500 focus:outline-none transition"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label class="text-[11px] font-semibold text-slate-600">किसान का नाम (Farmer Name):</label>
-                    <input type="text" id="feedbackNameInput" placeholder="जैसे: रमेश पटेल" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
+                    <label id="lblFarmerNamePrompt" class="text-[11px] font-semibold text-slate-600">Farmer Name:</label>
+                    <input type="text" id="feedbackNameInput" placeholder="e.g. Ramesh Patel" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
                   </div>
                   <div>
-                    <label class="text-[11px] font-semibold text-slate-600">स्थान / जिला (Village / District):</label>
-                    <input type="text" id="feedbackLocationInput" placeholder="जैसे: करनाल, हरियाणा" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
+                    <label id="lblLocationPrompt" class="text-[11px] font-semibold text-slate-600">Village / District:</label>
+                    <input type="text" id="feedbackLocationInput" placeholder="e.g. Melur, Madurai / Karnal" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-kisan-500 focus:outline-none">
                   </div>
                 </div>
 
                 <div class="flex items-center justify-between pt-1">
-                  <span class="text-[11px] text-slate-500">आपकी समीक्षा अन्य किसान भाइयों के काम आएगी।</span>
+                  <span id="lblFeedbackHelper" class="text-[11px] text-slate-500">Your feedback helps fellow farmers take timely action.</span>
                   <button type="button" onclick="submitFarmerFeedback()" id="btnSubmitFeedback" class="inline-flex items-center gap-1.5 px-4 py-2 bg-kisan-600 hover:bg-kisan-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all">
                     <i data-lucide="send" class="w-4 h-4"></i>
-                    <span>समीक्षा भेजें (Submit)</span>
+                    <span id="btnSubmitFeedbackText">Submit Review</span>
                   </button>
                 </div>
 
                 <!-- Submission Success Banner -->
                 <div id="feedbackSuccessAlert" class="hidden p-3 bg-emerald-100/90 border border-emerald-300 text-emerald-900 rounded-xl text-xs sm:text-sm flex items-center gap-2">
                   <i data-lucide="check-circle" class="w-5 h-5 text-emerald-700 flex-shrink-0"></i>
-                  <span><strong>धन्यवाद किसान भाई!</strong> आपकी समीक्षा और संतुष्टि फीडबैक सफलतापूर्वक दर्ज कर ली गई है।</span>
+                  <span id="lblFeedbackSuccessMsg"><strong>Thank you!</strong> Your review and feedback have been successfully recorded.</span>
                 </div>
               </div>
             </div>
@@ -604,12 +601,12 @@
               <span class="p-1.5 bg-amber-100 text-amber-800 rounded-xl">
                 <i data-lucide="award" class="w-5 h-5"></i>
               </span>
-              <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
-                किसान संतुष्टि एवं सामुदायिक समीक्षाएं (Farmer Community Reviews)
+              <h3 id="lblCommunityReviewsTitle" class="text-lg sm:text-xl font-extrabold text-slate-900">
+                Farmer Community Reviews & Satisfaction
               </h3>
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">
-              देशभर के जागरूक किसानों द्वारा KisanDr AI के निदान व उपचार पर वास्तविक अनुभव
+            <p id="lblCommunityReviewsSubtitle" class="text-xs sm:text-sm text-slate-500 mt-1">
+              Real recovery stories and feedback from farmers across India
             </p>
           </div>
 
@@ -617,11 +614,11 @@
           <div class="flex items-center gap-3">
             <div class="text-center px-3.5 py-2 bg-emerald-50 border border-emerald-200 rounded-xl">
               <div id="statSatRate" class="text-xl font-extrabold text-emerald-700">98%</div>
-              <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-900">संतुष्ट किसान</div>
+              <div id="lblStatSatisfiedFarmers" class="text-[10px] font-bold uppercase tracking-wider text-emerald-900">Satisfied Farmers</div>
             </div>
             <div class="text-center px-3.5 py-2 bg-amber-50 border border-amber-200 rounded-xl">
               <div id="statAvgRating" class="text-xl font-extrabold text-amber-700">4.9 ★</div>
-              <div class="text-[10px] font-bold uppercase tracking-wider text-amber-900">औसत रेटिंग</div>
+              <div id="lblStatAvgRating" class="text-[10px] font-bold uppercase tracking-wider text-amber-900">Average Rating</div>
             </div>
           </div>
         </div>
@@ -735,10 +732,10 @@
           </div>
           <div>
             <h3 class="text-base sm:text-lg font-extrabold flex items-center gap-2">
-              <span>निकटतम कीटनाशक व खाद विक्रेता (Agro Shops)</span>
-              <span class="text-[10px] bg-amber-400/30 text-amber-100 font-bold px-2 py-0.5 rounded-full border border-amber-300/40">लाइसेंसी दुकान</span>
+              <span id="lblShopsModalTitle">Nearby Pesticide & Fertilizer Stores</span>
+              <span id="badgeLicensedStore" class="text-[10px] bg-amber-400/30 text-amber-100 font-bold px-2 py-0.5 rounded-full border border-amber-300/40">Licensed Dealer</span>
             </h3>
-            <p class="text-xs text-amber-100">Find licensed pesticide, fertilizer & bio-input stores near your farm</p>
+            <p id="lblShopsModalSubtitle" class="text-xs text-amber-100">Find licensed pesticide, fertilizer & bio-input stores near your farm</p>
           </div>
         </div>
         <button onclick="closeShopLocatorModal()" class="p-1.5 text-amber-100 hover:text-white hover:bg-white/10 rounded-xl transition">
@@ -755,7 +752,7 @@
               type="text" 
               id="shopSearchInput" 
               value="Melur" 
-              placeholder="शहर, कस्बा, गांव या पता लिखें (उदा. Melur, Madurai, Guntur)..."
+              placeholder="Enter town, taluk, village or address (e.g. Melur, Madurai, Guntur)..."
               class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none shadow-2xs"
             >
           </div>
@@ -765,7 +762,7 @@
             class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center gap-1.5 flex-shrink-0"
           >
             <i data-lucide="search" class="w-4 h-4"></i>
-            <span>खोजें (Search)</span>
+            <span id="btnSearchShopsText">Search</span>
           </button>
         </form>
 
@@ -837,12 +834,84 @@
 
   <!-- Application Logic -->
   <script>
-    let currentLanguage = 'hi';
+    let currentLanguage = 'en';
     let currentSelectedFile = null;
     let currentSelectedSample = null;
     let latestDiagnosisData = null;
     let speechUtterance = null;
     let isSpeaking = false;
+
+    // Chatbot suggestion prompts localized for all 9 regional languages
+    const CHAT_PROMPTS_BY_LANG = {
+      en: [
+        "🌱 How to make neem spray?",
+        "🌧️ Can I spray in rainy season?",
+        "🧪 What is Mancozeb dosage?",
+        "🍅 Leaf curl treatment?"
+      ],
+      hi: [
+        "🌱 नीम का स्प्रे कैसे बनाएं?",
+        "🌧️ बारिश में छिड़काव करें?",
+        "🧪 मैंकोजेब की सही मात्रा?",
+        "🍅 पत्ती मरोड़ रोग का इलाज?"
+      ],
+      te: [
+        "🌱 వేప నూనె స్ప్రే తయారీ?",
+        "🌧️ వర్షంలో మందు పిచికారీ?",
+        "🧪 మాంకోజెబ్ మోతాదు ఎంత?",
+        "🍅 ఆకు ముడత నివారణ?"
+      ],
+      ta: [
+        "🌱 வேப்ப எண்ணெய் தயாரிப்பு?",
+        "🌧️ மழையில் தெளிக்கலாமா?",
+        "🧪 மான்கோசெப் அளவு?",
+        "🍅 இலை சுருட்டல் சிகிச்சை?"
+      ],
+      kn: [
+        "🌱 ಬೇವಿನ ಎಣ್ಣೆ ಸ್ಪ್ರೇ ತಯಾರಿಕೆ?",
+        "🌧️ ಮಳೆಯಲ್ಲಿ ಸಿಂಪಡಿಸಬಹುದೇ?",
+        "🧪 ಮ್ಯಾಂಕೋಜೆಬ್ ಪ್ರಮಾಣ?",
+        "🍅 ಎಲೆ ಸುರುಟು ರೋಗದ ಚಿಕಿತ್ಸೆ?"
+      ],
+      mr: [
+        "🌱 निंबोळी अर्क कसा बनवावा?",
+        "🌧️ पावसात फवारणी करावी का?",
+        "🧪 मँकोझेबचे योग्य प्रमाण?",
+        "🍅 टोमॅटो चुरडा-मुरडा उपाय?"
+      ],
+      bn: [
+        "🌱 নিম স্প্রে কীভাবে বানাবেন?",
+        "🌧️ বৃষ্টির দিনে স্প্রে করা যায়?",
+        "🧪 ম্যানকোজেবের সঠিক মাত্রা?",
+        "🍅 পাতা কোঁকড়ানো রোগের চিকিৎসা?"
+      ],
+      gu: [
+        "🌱 લીમડાનો સ્પ્રે કેવી રીતે બનાવવો?",
+        "🌧️ વરસાદમાં છંટકાવ કરવો?",
+        "🧪 મેન્કોઝેબનું યોગ્ય પ્રમાણ?",
+        "🍅 પાન કોકડવાનો ઉપાય?"
+      ],
+      pa: [
+        "🌱 ਨੀਮ ਦਾ ਸਪਰੇਅ ਕਿਵੇਂ ਬਣਾਈਏ?",
+        "🌧️ ਬਾਰਿਸ਼ ਵਿੱਚ ਸਪਰੇਅ ਕਰੀਏ?",
+        "🧪 ਮੈਂਕੋਜ਼ੇਬ ਦੀ ਸਹੀ ਖ਼ੁਰਾਕ?",
+        "🍅 ਪੱਤਾ ਮਰੋੜ ਰੋਗ ਦਾ ਇਲਾਜ?"
+      ]
+    };
+
+    function renderChatbotSuggestions(lang) {
+      const container = document.getElementById('chatSuggestionsChips');
+      if (!container) return;
+      container.innerHTML = '';
+      const prompts = CHAT_PROMPTS_BY_LANG[lang] || CHAT_PROMPTS_BY_LANG.en;
+      prompts.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs text-xs';
+        btn.textContent = p;
+        btn.onclick = () => sendSuggestion(p);
+        container.appendChild(btn);
+      });
+    }
 
     // Initialize Lucide icons
     document.addEventListener("DOMContentLoaded", () => {
@@ -865,6 +934,7 @@
         const data = await res.json();
         const labels = data.labels;
         
+        // Main Diagnosis Page Labels
         if (labels.drag_drop_text) document.getElementById('dragDropText').textContent = labels.drag_drop_text;
         if (labels.diagnose_btn) document.getElementById('diagnoseBtnText').textContent = labels.diagnose_btn;
         if (labels.analyzing) document.getElementById('analyzingText').textContent = labels.analyzing;
@@ -876,6 +946,122 @@
         if (labels.weather_risk_title) document.getElementById('weatherRiskTitle').textContent = labels.weather_risk_title;
         if (labels.sample_gallery) document.getElementById('sampleGalleryLabel').textContent = labels.sample_gallery;
         if (labels.upload_heading) document.getElementById('uploadHeading').querySelector('span').textContent = labels.upload_heading;
+
+        // Header Navigation Buttons
+        const navGuide = document.getElementById('btnNavCropGuideText');
+        if (navGuide && labels.crop_guide_btn) navGuide.textContent = labels.crop_guide_btn;
+
+        const navShops = document.getElementById('btnNavPesticideShopsText');
+        if (navShops && labels.find_shops_btn) navShops.textContent = labels.find_shops_btn;
+
+        const navBot = document.getElementById('btnNavAIChatbotText');
+        if (navBot && labels.chatbot_btn) navBot.textContent = labels.chatbot_btn;
+
+        // Result Card Find Shops Button
+        const btnFindShops = document.getElementById('btnFindCureShopsText');
+        if (btnFindShops && labels.find_cure_shops) btnFindShops.textContent = labels.find_cure_shops;
+
+        // Satisfaction & Comments Section
+        if (labels.satisfaction_title && document.getElementById('lblSatTitle')) {
+          document.getElementById('lblSatTitle').textContent = labels.satisfaction_title;
+        }
+        if (labels.satisfaction_subtitle && document.getElementById('lblSatSubtitle')) {
+          document.getElementById('lblSatSubtitle').textContent = labels.satisfaction_subtitle;
+        }
+        if (labels.btn_satisfied && document.getElementById('txtSatSatisfied')) {
+          document.getElementById('txtSatSatisfied').textContent = labels.btn_satisfied;
+        }
+        if (labels.btn_neutral && document.getElementById('txtSatNeutral')) {
+          document.getElementById('txtSatNeutral').textContent = labels.btn_neutral;
+        }
+        if (labels.btn_unsatisfied && document.getElementById('txtSatUnsatisfied')) {
+          document.getElementById('txtSatUnsatisfied').textContent = labels.btn_unsatisfied;
+        }
+        if (labels.rating_label && document.getElementById('lblRatingPrompt')) {
+          document.getElementById('lblRatingPrompt').textContent = labels.rating_label;
+        }
+        if (labels.comment_label && document.getElementById('lblCommentPrompt')) {
+          document.getElementById('lblCommentPrompt').textContent = labels.comment_label;
+        }
+        if (labels.comment_placeholder && document.getElementById('feedbackCommentInput')) {
+          document.getElementById('feedbackCommentInput').placeholder = labels.comment_placeholder;
+        }
+        if (labels.farmer_name_label && document.getElementById('lblFarmerNamePrompt')) {
+          document.getElementById('lblFarmerNamePrompt').textContent = labels.farmer_name_label;
+        }
+        if (labels.farmer_name_placeholder && document.getElementById('feedbackNameInput')) {
+          document.getElementById('feedbackNameInput').placeholder = labels.farmer_name_placeholder;
+        }
+        if (labels.location_label && document.getElementById('lblLocationPrompt')) {
+          document.getElementById('lblLocationPrompt').textContent = labels.location_label;
+        }
+        if (labels.location_placeholder && document.getElementById('feedbackLocationInput')) {
+          document.getElementById('feedbackLocationInput').placeholder = labels.location_placeholder;
+        }
+        if (labels.submit_review_btn && document.getElementById('btnSubmitFeedbackText')) {
+          document.getElementById('btnSubmitFeedbackText').textContent = labels.submit_review_btn;
+        }
+
+        // Community Reviews Section
+        if (labels.community_reviews_title && document.getElementById('lblCommunityReviewsTitle')) {
+          document.getElementById('lblCommunityReviewsTitle').textContent = labels.community_reviews_title;
+        }
+        if (labels.community_reviews_subtitle && document.getElementById('lblCommunityReviewsSubtitle')) {
+          document.getElementById('lblCommunityReviewsSubtitle').textContent = labels.community_reviews_subtitle;
+        }
+        if (labels.stat_satisfied_farmers && document.getElementById('lblStatSatisfiedFarmers')) {
+          document.getElementById('lblStatSatisfiedFarmers').textContent = labels.stat_satisfied_farmers;
+        }
+        if (labels.stat_avg_rating && document.getElementById('lblStatAvgRating')) {
+          document.getElementById('lblStatAvgRating').textContent = labels.stat_avg_rating;
+        }
+
+        // Pesticide Shops Modal
+        if (labels.shops_modal_title && document.getElementById('lblShopsModalTitle')) {
+          document.getElementById('lblShopsModalTitle').textContent = labels.shops_modal_title;
+        }
+        if (labels.shops_modal_subtitle && document.getElementById('lblShopsModalSubtitle')) {
+          document.getElementById('lblShopsModalSubtitle').textContent = labels.shops_modal_subtitle;
+        }
+        if (labels.shops_search_placeholder && document.getElementById('shopSearchInput')) {
+          document.getElementById('shopSearchInput').placeholder = labels.shops_search_placeholder;
+        }
+        if (labels.shops_search_btn && document.getElementById('btnSearchShopsText')) {
+          document.getElementById('btnSearchShopsText').textContent = labels.shops_search_btn;
+        }
+
+        // Chatbot Widget
+        const launcherText = document.getElementById('chatLauncherBtnText');
+        if (launcherText && labels.chatbot_btn) launcherText.textContent = labels.chatbot_btn;
+
+        if (labels.chatbot_title && document.getElementById('lblChatbotTitle')) {
+          document.getElementById('lblChatbotTitle').textContent = labels.chatbot_title;
+        }
+        if (labels.chatbot_status && document.getElementById('lblChatbotStatus')) {
+          document.getElementById('lblChatbotStatus').textContent = labels.chatbot_status;
+        }
+        if (labels.chatbot_subtitle && document.getElementById('lblChatbotSubtitle')) {
+          document.getElementById('lblChatbotSubtitle').textContent = labels.chatbot_subtitle;
+        }
+        if (labels.chatbot_input_placeholder && document.getElementById('chatInput')) {
+          document.getElementById('chatInput').placeholder = labels.chatbot_input_placeholder;
+        }
+        if (labels.quick_suggestions_label && document.getElementById('lblQuickSuggestions')) {
+          document.getElementById('lblQuickSuggestions').innerHTML = `<i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i> ${labels.quick_suggestions_label}`;
+        }
+
+        // Update welcome message if user hasn't chatted yet
+        if (chatConversationHistory.length === 0 && labels.chatbot_welcome && document.getElementById('chatWelcomeText')) {
+          document.getElementById('chatWelcomeText').innerHTML = formatMarkdownText(labels.chatbot_welcome);
+          if (labels.chatbot_title && document.getElementById('lblWelcomeBotName')) {
+            document.getElementById('lblWelcomeBotName').textContent = labels.chatbot_title;
+          }
+        }
+
+        // Render localized suggestion chips
+        renderChatbotSuggestions(currentLanguage);
+        lucide.createIcons();
+
       } catch (e) {
         console.warn("UI label load error", e);
       }
@@ -1642,7 +1828,7 @@
       <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
       <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full"></span>
     </div>
-    <span>कृषि मित्र AI</span>
+    <span id="chatLauncherBtnText">AI Chatbot</span>
   </button>
 
   <!-- Expandable Chatbot Drawer Window -->
@@ -1657,10 +1843,10 @@
         </div>
         <div>
           <h3 class="text-sm font-extrabold flex items-center gap-1.5">
-            <span>KisanDr AI कृषि मित्र</span>
-            <span class="text-[10px] bg-emerald-500/40 text-emerald-100 font-semibold px-2 py-0.5 rounded-full border border-emerald-400/30">ऑनलाइन</span>
+            <span id="lblChatbotTitle">KisanDr AI Agri Assistant</span>
+            <span id="lblChatbotStatus" class="text-[10px] bg-emerald-500/40 text-emerald-100 font-semibold px-2 py-0.5 rounded-full border border-emerald-400/30">Online</span>
           </h3>
-          <p class="text-[11px] text-emerald-200">AI Agricultural Agronomist & Advisory</p>
+          <p id="lblChatbotSubtitle" class="text-[11px] text-emerald-200">AI Agricultural Agronomist & Advisory</p>
         </div>
       </div>
       <div class="flex items-center gap-1">
@@ -1671,23 +1857,14 @@
     </div>
 
     <!-- Suggested Quick Questions Pills -->
-    <div class="p-2.5 bg-emerald-50/70 border-b border-emerald-100 overflow-x-auto flex items-center gap-2 text-xs no-scrollbar">
-      <span class="text-[10px] font-bold uppercase text-emerald-900 flex-shrink-0 flex items-center gap-1">
+    <div id="chatSuggestionsContainer" class="p-2.5 bg-emerald-50/70 border-b border-emerald-100 overflow-x-auto flex items-center gap-2 text-xs no-scrollbar">
+      <span id="lblQuickSuggestions" class="text-[10px] font-bold uppercase text-emerald-900 flex-shrink-0 flex items-center gap-1">
         <i data-lucide="sparkles" class="w-3 h-3 text-amber-500"></i>
-        सुझाव:
+        Suggestions:
       </span>
-      <button onclick="sendSuggestion('नीम का स्प्रे कैसे तैयार करें?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
-        🌱 नीम का स्प्रे
-      </button>
-      <button onclick="sendSuggestion('क्या बारिश के मौसम में दवा छिड़क सकते हैं?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
-        🌧️ बारिश में छिड़काव
-      </button>
-      <button onclick="sendSuggestion('मैंकोजेब की सही मात्रा क्या है?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
-        🧪 मैंकोजेब डोज़
-      </button>
-      <button onclick="sendSuggestion('टमाटर में पत्ती मरोड़ रोग का इलाज क्या है?')" class="flex-shrink-0 px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-900 font-medium rounded-full border border-emerald-200 transition shadow-2xs">
-        🍅 पत्ती मरोड़ इलाज
-      </button>
+      <div id="chatSuggestionsChips" class="flex items-center gap-1.5">
+        <!-- Rendered dynamically by renderChatbotSuggestions(lang) -->
+      </div>
     </div>
 
     <!-- Chat Messages Scroll Area -->
@@ -1698,12 +1875,12 @@
           <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold border-b border-slate-200/80 pb-1.5">
             <span class="flex items-center gap-1.5 text-emerald-800">
               <i data-lucide="sprout" class="w-3.5 h-3.5 text-emerald-600"></i>
-              <span>KisanDr AI कृषि मित्र</span>
+              <span id="lblWelcomeBotName">KisanDr AI Agri Assistant</span>
             </span>
           </div>
-          <p class="leading-relaxed">
-            👨‍🌾 <strong>राम राम किसान भाई!</strong> मैं आपका एआई कृषि वैज्ञानिक सहायक हूँ।<br>
-            आप मुझसे किसी भी फसल की बीमारी, जैविक स्प्रे (नीम, छाछ, जीवामृत), रासायनिक दवा की सही मात्रा या खाद के बारे में पूछ सकते हैं।
+          <p id="chatWelcomeText" class="leading-relaxed">
+            👨‍🌾 <strong>Hello Farmer Friend!</strong> I am your AI Agronomist Assistant.<br>
+            You can ask me about crop diseases, organic remedies (neem oil, buttermilk, jeevamrut), chemical dosages, or balanced fertilizer schedules.
           </p>
         </div>
       </div>
@@ -1714,7 +1891,7 @@
           <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce"></span>
           <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
           <span class="w-2 h-2 bg-emerald-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-          <span class="ml-1 text-[11px] font-medium text-emerald-800">कृषि मित्र लिख रहे हैं...</span>
+          <span id="lblTypingText" class="ml-1 text-[11px] font-medium text-emerald-800">Agri assistant is typing...</span>
         </div>
       </div>
     </div>

@@ -1,5 +1,17 @@
 [
   {
+    "id": "rev-009",
+    "farmer_name": "Kisan Harish",
+    "location": "Varanasi, UP",
+    "crop": "Tomato",
+    "disease": "Early Blight",
+    "rating": 5,
+    "satisfaction": "satisfied",
+    "comment": "ट्राइकोडर्मा और तांबे के छिड़काव से फसल पूरी तरह स्वस्थ हो गई।",
+    "date": "2026-09-26",
+    "helpful_count": 1
+  },
+  {
     "id": "rev-008",
     "farmer_name": "Kisan Harish",
     "location": "Varanasi, UP",
