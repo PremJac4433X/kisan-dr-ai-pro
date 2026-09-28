@@ -136,6 +136,14 @@ def add_feedback(
     # Prepend newest review to top
     reviews.insert(0, new_entry)
     _save_feedback(reviews)
+
+    # Sync to Google Cloud Firestore if connected
+    try:
+        from app.gcp_datastore import gcp_datastore
+        gcp_datastore.save_feedback(new_entry)
+    except Exception as e:
+        pass
+
     return new_entry
 
 

@@ -1,0 +1,59 @@
+# Google Cloud Build CI/CD Pipeline for KisanDr AI
+# Deploys container image to Google Artifact Registry and Google Cloud Run.
+steps:
+  # Step 1: Run unit tests with Python 3.11
+  - name: 'python:3.11-slim'
+    id: 'run-unit-tests'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+        python -m unittest discover tests
+
+  # Step 2: Build production container image using Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-docker-image'
+    args:
+      - 'build'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai:$COMMIT_SHA'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai:latest'
+      - '.'
+
+  # Step 3: Push image to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-to-artifact-registry'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai'
+
+  # Step 4: Deploy to Google Cloud Run with autoscaling
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-to-cloud-run'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'kisan-dr-ai-service'
+      - '--image=$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai:$COMMIT_SHA'
+      - '--region=$_REGION'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--min-instances=0'
+      - '--max-instances=10'
+      - '--cpu=1'
+      - '--memory=1Gi'
+      - '--set-env-vars=GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GEMINI_MODEL=gemini-1.5-flash'
+
+substitutions:
+  _REGION: 'asia-south1' # Mumbai, India (low-latency for Indian farmers)
+
+images:
+  - '$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai:$COMMIT_SHA'
+  - '$_REGION-docker.pkg.dev/$PROJECT_ID/kisan-ai-repo/kisan-dr-ai:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

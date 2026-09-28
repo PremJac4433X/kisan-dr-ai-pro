@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package kisandr.v1;
+
+option go_package = "github.com/PremJac4433X/kisan-dr-ai-pro/proto/v1;kisandrv1";
+option java_package = "com.google.kisandr.v1";
+option java_outer_classname = "PlantPathologyProto";
+
+// Google gRPC Plant Pathology & Agronomy Service
+service PlantPathologyService {
+  // Multimodal visual leaf pathology diagnosis
+  rpc DiagnoseLeaf (DiagnoseLeafRequest) returns (DiagnoseLeafResponse);
+
+  // Geo-spatial pesticide and bio-cure shop lookup
+  rpc LocateShops (LocateShopsRequest) returns (LocateShopsResponse);
+
+  // Conversational agricultural advisory
+  rpc ConsultAssistant (ChatConsultRequest) returns (ChatConsultResponse);
+
+  // Submit farmer satisfaction rating & feedback
+  rpc SubmitFeedback (FeedbackSubmissionRequest) returns (FeedbackSubmissionResponse);
+}
+
+message DiagnoseLeafRequest {
+  bytes image_data = 1;
+  string target_crop = 2;
+  string language = 3;
+  double ambient_temp_c = 4;
+  double relative_humidity_pct = 5;
+  double rainfall_mm = 6;
+}
+
+message CandidateDisease {
+  string disease_id = 1;
+  string crop = 2;
+  string disease_name = 3;
+  double probability = 4;
+}
+
+message DiagnoseLeafResponse {
+  string status = 1;
+  string event_id = 2;
+  string crop = 3;
+  string disease_id = 4;
+  string disease_name = 5;
+  string disease_name_localized = 6;
+  string pathogen = 7;
+  string pathogen_type = 8;
+  double confidence = 9;
+  string severity_stage = 10;
+  string urgency = 11;
+  double affected_area_pct = 12;
+  repeated string organic_remedies = 13;
+  repeated string chemical_treatments = 14;
+  repeated string preventive_practices = 15;
+  string weather_risk_level = 16;
+  repeated CandidateDisease top_candidates = 17;
+  string voice_summary = 18;
+}
+
+message LocateShopsRequest {
+  string query_location = 1;
+  string crop = 2;
+  string disease_id = 3;
+}
+
+message PesticideShop {
+  string id = 1;
+  string name = 2;
+  string address = 3;
+  string phone = 4;
+  double rating = 5;
+  string distance_km = 6;
+  repeated string remedies_in_stock = 7;
+  string google_maps_url = 8;
+  string whatsapp_url = 9;
+}
+
+message LocateShopsResponse {
+  string status = 1;
+  string query_location = 2;
+  int32 total_shops = 3;
+  repeated PesticideShop shops = 4;
+}
+
+message ChatConsultRequest {
+  string message = 1;
+  string language = 2;
+  string crop = 3;
+  string disease_id = 4;
+}
+
+message ChatConsultResponse {
+  string reply = 1;
+  string source = 2;
+  repeated string suggestions = 3;
+  string satisfied_prompt = 4;
+}
+
+message FeedbackSubmissionRequest {
+  string farmer_name = 1;
+  string location = 2;
+  string crop = 3;
+  string disease = 4;
+  string satisfaction = 5;
+  int32 rating = 6;
+  string comment = 7;
+}
+
+message FeedbackSubmissionResponse {
+  string status = 1;
+  string id = 2;
+  string message = 3;
+}

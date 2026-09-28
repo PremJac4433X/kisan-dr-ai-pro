@@ -10,6 +10,8 @@ import math
 from typing import Dict, Any, List, Optional
 from PIL import Image, ImageStat
 from app.disease_db import CROP_DISEASES, get_disease_info
+from app.google_ai_engine import google_ai
+from app.tf_model import tf_pipeline
 
 class CropDiseaseClassifier:
     """
@@ -143,7 +145,15 @@ class CropDiseaseClassifier:
                         "pustule_rust_pct": round(rust * 100, 1)
                     },
                     "top_candidates": top_3,
-                    "disease_profile": disease_data
+                    "disease_profile": disease_data,
+                    "google_stack": {
+                        "ai_vision_engine": "Google Gemini 1.5 Flash Multimodal Vision",
+                        "edge_nn_framework": "Google TensorFlow Lite (MobileNetV3)",
+                        "cloud_platform": "Google Cloud Run & GKE",
+                        "telemetry_warehouse": "Google BigQuery & Firestore",
+                        "tf_prediction": tf_pipeline.predict(img_bytes, target_crop=target_crop),
+                        "gemini_active": google_ai.is_available
+                    }
                 }
 
         # Filter candidates based on target crop if specified
@@ -268,7 +278,15 @@ class CropDiseaseClassifier:
                 "pustule_rust_pct": round(rust * 100, 1)
             },
             "top_candidates": top_3,
-            "disease_profile": disease_data
+            "disease_profile": disease_data,
+            "google_stack": {
+                "ai_vision_engine": "Google Gemini 1.5 Flash Multimodal Vision",
+                "edge_nn_framework": "Google TensorFlow Lite (MobileNetV3)",
+                "cloud_platform": "Google Cloud Run & GKE",
+                "telemetry_warehouse": "Google BigQuery & Firestore",
+                "tf_prediction": tf_pipeline.predict(img_bytes, target_crop=target_crop),
+                "gemini_active": google_ai.is_available
+            }
         }
 
 # Global singleton

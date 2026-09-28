@@ -1,10 +1,15 @@
 # 🌿 KisanDr AI (कृषि-मित्र)
 ### Intelligent Crop Disease Diagnostics & Multilingual Farmer Advisory Platform
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Google Gemini](https://img.shields.io/badge/Google%20AI-Gemini%201.5%20Flash-4285F4.svg)](https://ai.google.dev/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x%20%7C%20TFLite-FF6F00.svg)](https://www.tensorflow.org/)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Cloud%20Run%20%26%20GKE-34A853.svg)](https://cloud.google.com/)
+[![BigQuery](https://img.shields.io/badge/BigQuery-SQL%20Analytics-4285F4.svg)](https://cloud.google.com/bigquery)
+[![Firestore](https://img.shields.io/badge/Firestore-NoSQL-FFA000.svg)](https://firebase.google.com/docs/firestore)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+> 📖 **Enterprise Architecture Guide**: See [GOOGLE_STACK.md](GOOGLE_STACK.md) for complete technical breakdown of Google-oriented tools, Terraform IaC, Cloud Build CI/CD, and gRPC microservices.
 
 ---
 

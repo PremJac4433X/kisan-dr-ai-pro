@@ -225,5 +225,42 @@ class TestAgriCureAI(unittest.TestCase):
         self.assertGreaterEqual(data["total_shops"], 1)
         self.assertIn("Usilampatti", data["shops"][0]["address"])
 
+    def test_google_stack_status(self):
+        """Verify /api/google-stack reports all integrated Google technologies."""
+        res = client.get("/api/google-stack")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("ai_vision", data)
+        self.assertIn("Gemini", data["ai_vision"]["technology"])
+        self.assertIn("neural_network", data)
+        self.assertIn("TensorFlow", data["neural_network"]["technology"])
+        self.assertIn("database", data)
+        self.assertIn("Firestore", data["database"]["technology"])
+        self.assertIn("analytics", data)
+        self.assertIn("BigQuery", data["analytics"]["technology"])
+
+    def test_bigquery_analytics_trends(self):
+        """Verify /api/analytics/trends returns epidemic outbreak telemetry."""
+        res = client.get("/api/analytics/trends")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["status"], "success")
+        self.assertIn("warehouse", data)
+        self.assertEqual(data["warehouse"], "Google BigQuery")
+        self.assertGreater(len(data["trends"]), 0)
+
+    def test_diagnosis_returns_google_metadata(self):
+        """Verify diagnosis payload contains event_id and google_stack metadata."""
+        res = client.post(
+            "/api/diagnose",
+            data={"sample_name": "tomato_early_blight", "target_crop": "tomato", "lang": "en"}
+        )
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("event_id", data)
+        self.assertIn("google_stack", data)
+        self.assertIn("Gemini", data["google_stack"]["ai_vision_engine"])
+        self.assertIn("TensorFlow", data["google_stack"]["edge_nn_framework"])
+
 if __name__ == "__main__":
     unittest.main()

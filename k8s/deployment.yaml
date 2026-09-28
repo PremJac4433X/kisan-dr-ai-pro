@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kisan-dr-ai-deployment
+  namespace: default
+  labels:
+    app: kisan-dr-ai
+    tier: api-backend
+    cloud: google-cloud
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kisan-dr-ai
+  template:
+    metadata:
+      labels:
+        app: kisan-dr-ai
+    spec:
+      containers:
+        - name: kisan-dr-ai-container
+          image: asia-south1-docker.pkg.dev/kisan-dr-ai-project/kisan-ai-repo/kisan-dr-ai:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+              name: http
+            - containerPort: 50051
+              name: grpc
+          env:
+            - name: PORT
+              value: "8000"
+            - name: GOOGLE_CLOUD_PROJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: kisan-config
+                  key: project_id
+                  optional: true
+            - name: GEMINI_MODEL
+              value: "gemini-1.5-flash"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10

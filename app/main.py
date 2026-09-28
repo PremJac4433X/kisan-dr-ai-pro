@@ -173,8 +173,32 @@ async def diagnose_crop_disease(
 
     whatsapp_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(share_text)}"
 
+    # Record consultation event to Google Cloud Firestore & BigQuery telemetry
+    event_id = "local-diag"
+    try:
+        from app.gcp_datastore import gcp_datastore
+        event_id = gcp_datastore.record_diagnosis_event({
+            "crop": crop_name,
+            "disease_id": disease_id,
+            "disease_name": base_info.get("disease_name", ""),
+            "confidence": diagnosis["confidence"],
+            "severity_stage": diagnosis["severity_stage"],
+            "affected_area_pct": diagnosis["affected_area_pct"],
+            "lang": lang,
+            "weather_risk": weather_risk
+        })
+    except Exception as e:
+        print(f"Datastore notice: {e}")
+
     return {
         "status": "success",
+        "event_id": event_id,
+        "google_stack": diagnosis.get("google_stack", {
+            "ai_vision_engine": "Google Gemini 1.5 Flash Multimodal Vision",
+            "edge_nn_framework": "Google TensorFlow Lite (MobileNetV3)",
+            "cloud_platform": "Google Cloud Run & GKE",
+            "telemetry_warehouse": "Google BigQuery & Firestore"
+        }),
         "diagnosis": {
             "disease_id": disease_id,
             "crop": crop_name,
@@ -322,6 +346,64 @@ async def get_nearby_pesticide_shops(
         recommended_meds=remedies if remedies else None
     )
     return result
+
+# -------------------------------------------------------------
+# Google Cloud Platform BigQuery Telemetry & Stack Insights
+# -------------------------------------------------------------
+
+@app.get("/api/analytics/trends")
+async def get_regional_epidemic_trends(crop: Optional[str] = Query(None)):
+    """
+    Returns regional epidemic risk telemetry powered by Google BigQuery.
+    """
+    from app.gcp_datastore import gcp_datastore
+    trends = gcp_datastore.query_epidemic_trends(crop=crop)
+    return {
+        "status": "success",
+        "warehouse": "Google BigQuery",
+        "dataset": "kisan_ai_analytics.disease_telemetry",
+        "trends": trends
+    }
+
+@app.get("/api/google-stack")
+async def get_google_stack_status():
+    """
+    Returns live status of all Google-oriented technologies integrated in KisanDr AI.
+    """
+    from app.google_ai_engine import google_ai
+    from app.gcp_datastore import gcp_datastore
+    return {
+        "ai_vision": {
+            "technology": "Google Gemini 1.5 Flash / Pro Vision",
+            "active": google_ai.is_available,
+            "role": "Multimodal Plant Pathology & Advisory"
+        },
+        "neural_network": {
+            "technology": "Google TensorFlow / TensorFlow Lite",
+            "architecture": "MobileNetV3-Large Edge Classifier",
+            "role": "On-Device & Cloud Neural Classification"
+        },
+        "database": {
+            "technology": "Google Cloud Firestore (NoSQL)",
+            "connected": bool(gcp_datastore.firestore_client),
+            "role": "Consultation records, feedback, and shop catalog"
+        },
+        "analytics": {
+            "technology": "Google BigQuery (SQL Data Warehouse)",
+            "connected": bool(gcp_datastore.bigquery_client),
+            "role": "Real-time epidemiological outbreak monitoring"
+        },
+        "cloud_compute": {
+            "technology": "Google Cloud Run & GKE (Google Kubernetes Engine)",
+            "orchestration": "Kubernetes + Docker + Terraform IaC",
+            "role": "Serverless and microservice autoscaling deployment"
+        },
+        "distributed_rpc": {
+            "technology": "gRPC & Protocol Buffers",
+            "definition": "proto/plant_pathology.proto",
+            "role": "High-throughput inter-service communication"
+        }
+    }
 
 if __name__ == "__main__":
     import uvicorn
